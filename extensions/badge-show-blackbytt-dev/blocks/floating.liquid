@@ -1,0 +1,52 @@
+<style>
+    .test {
+      display: block;
+    }
+  </style>
+  
+  <!doctype html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Product Image with Label</title>
+      <style>
+        /* Style for the product image container */
+        .product-image-container {
+          position: relative;
+          display: inline-block;
+        }
+  
+        /* Style for the label */
+        .label {
+          position: absolute;
+          top: 10px;
+          left: 10px;
+          background-color: #ff0000; /* Red background color */
+          color: #ffffff; /* White text color */
+          padding: 5px 10px; /* Add padding */
+          font-size: 14px; /* Font size */
+          border-radius: 5px; /* Rounded corners */
+        }
+  
+        /* Style for the product image */
+        .product-image {
+          display: block;
+          width: 100%; /* Ensure the image takes up the full container width */
+          height: auto; /* Maintain aspect ratio */
+        }
+      </style>
+    </head>
+    <body>
+    </body>
+  </html>
+  
+  {% schema %}
+  {
+    "name": "Floating Image - Latest",
+    "target": "body",
+    "javascript": "main.js",
+    "settings": [{ "type": "collection", "id": "collection", "label": "collection" }]
+  }
+  {% endschema %}
+  
