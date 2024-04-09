@@ -32,6 +32,7 @@ DOMContentLoaded -> bdgs_finditems -> identifyProductfromReq -> decodeJson + add
 
 
 ----------------------------------------------------------------
+DEPLOY ON LOCAL, not DIGITAL OCEAN
 
 In this main.js calls app.api.jsx, so we onyly deploy 1 APP
 
@@ -72,7 +73,7 @@ image - "POSTmancall-to-apijsx"
 Put the json body as raw
 
 ----------------------------------------------------------
-
+OLD WAY with server.js, localhost 3000 does not happen anymore
 Run app, and extenion calls second "app" running api on server.js
 
 main.js calls server.js in this

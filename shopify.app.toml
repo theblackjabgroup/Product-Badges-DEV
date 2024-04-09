@@ -3,10 +3,12 @@
 client_id = "06b8b66d599b1b51874daa9c33145ec7"
 name = "product-badges-dev-black-bytt"
 handle = "product-badges-dev-black-bytt"
-application_url = "https://example.com/"
+application_url = "https://deviation-pledge-brian-dutch.trycloudflare.com"
 embedded = true
 
 [build]
+automatically_update_urls_on_dev = true
+dev_store_url = "poc-v2.myshopify.com"
 include_config_on_deploy = true
 
 [access_scopes]
@@ -14,7 +16,11 @@ include_config_on_deploy = true
 scopes = "write_products"
 
 [auth]
-redirect_urls = [ "https://example.com/api/auth" ]
+redirect_urls = [
+  "https://deviation-pledge-brian-dutch.trycloudflare.com/auth/callback",
+  "https://deviation-pledge-brian-dutch.trycloudflare.com/auth/shopify/callback",
+  "https://deviation-pledge-brian-dutch.trycloudflare.com/api/auth/callback"
+]
 
 [webhooks]
 api_version = "2024-04"
