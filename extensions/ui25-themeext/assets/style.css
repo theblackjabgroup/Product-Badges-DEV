@@ -1,0 +1,50 @@
+.top-left{
+    top: 0px !important;
+    left: 0px !important;
+}
+
+.center-left{
+    top: 0px !important;
+    left: 0px !important;
+    bottom: 0px !important;
+}
+
+.bottom-left{
+    bottom: 0px !important;
+    left: 0px !important;
+}
+
+.top-right{
+    top: 0px !important;
+    right: 0px !important;
+}
+
+.center-right{
+    top: 0px !important;
+    right: 0px !important;
+    bottom: 0px !important;
+}
+
+.bottom-right{
+    bottom: 0px !important;
+    right: 0px !important;
+}
+
+.top-middle{
+    top: 0px !important;
+    left: 0px !important;
+    right: 0px !important;
+}
+
+.center-middle{
+    top: 0px !important;
+    left: 0px !important;
+    bottom: 0px !important;
+    right: 0px !important;
+}
+
+.bottom-middle{
+    bottom: 0px !important;
+    left: 0px !important;
+    right: 0px !important;
+}

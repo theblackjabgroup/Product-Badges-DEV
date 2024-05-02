@@ -1,0 +1,29 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "a96621e5d2c4b26c95805bd5c07c81c4"
+name = "ui25"
+handle = "ui25"
+application_url = "https://tc-correction-clear-atlanta.trycloudflare.com"
+embedded = true
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "poc-v2.myshopify.com"
+include_config_on_deploy = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products"
+
+[auth]
+redirect_urls = [
+  "https://tc-correction-clear-atlanta.trycloudflare.com/auth/callback",
+  "https://tc-correction-clear-atlanta.trycloudflare.com/auth/shopify/callback",
+  "https://tc-correction-clear-atlanta.trycloudflare.com/api/auth/callback"
+]
+
+[webhooks]
+api_version = "2024-04"
+
+[pos]
+embedded = false
