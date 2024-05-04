@@ -1,5 +1,4 @@
 // This is your Prisma schema file,
-// npm run prisma migrate dev -- --name add-qrcode-table
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
@@ -26,11 +25,13 @@ model Session {
 }
 
 model Badge {
-  productHandle    String   @id
+  id               String   @id
+  productHandle    String   
   badgeName        String      
   badgeUrl         String 
   displayPosition  String
   displayPage      String 
   isEnabled        Boolean
   shop             String
+  productImageUrl  String
 }

@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
   async function logMessage()
   {
     try{
-      const response = await fetch('https://tc-correction-clear-atlanta.trycloudflare.com/app/mapping')
+      const response = await fetch('https://cheque-speed-electro-hand.trycloudflare.com/app/mapping')
       const obj = await response.json();
       console.log("Response recieved from App", obj);
     }
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
   async function decodeJson() {
     try {
       // Make an HTTP GET request to the server-side endpoint
-      const response = await fetch('https://tc-correction-clear-atlanta.trycloudflare.com/app/mapping');
+      const response = await fetch('https://cheque-speed-electro-hand.trycloudflare.com/app/mapping');
   
       if (!response.ok) {
         throw new Error('Network response was not ok');
