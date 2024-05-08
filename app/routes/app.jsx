@@ -5,6 +5,17 @@ import { AppProvider } from "@shopify/shopify-app-remix/react";
 import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 import { authenticate } from "../shopify.server";
 
+import {Page, Button} from '@shopify/polaris';
+import mixpanel from 'mixpanel-browser';
+import { useState } from "react";
+
+mixpanel.init('70551b6bed93424cd2c7eacf49a345c2', {debug: true});
+mixpanel.identify('Varun')
+
+mixpanel.track('Sign Up', {
+  'Signup Type': 'Referral'
+})
+
 export const links = () => [{ rel: "stylesheet", href: polarisStyles }];
 
 export const loader = async ({ request }) => {
@@ -13,8 +24,35 @@ export const loader = async ({ request }) => {
   return json({ apiKey: process.env.SHOPIFY_API_KEY || "" });
 };
 
+
+
+
+
 export default function App() {
   const { apiKey } = useLoaderData();
+  const [ApiClickCount, setApiClickCount] = useState(0);
+  const [badgeClickCount, setbadgeClickCount] = useState(0);
+
+
+
+  function handleAPIClick() {
+    setApiClickCount(ApiClickCount + 1);
+    mixpanel.track("API button is clicked", {
+      'name': "varun2",
+      'ApiClickCount': ApiClickCount
+    });
+    console.log("ApiClickCount ",ApiClickCount)
+  }
+
+
+function handleBadgeClick() {
+  setbadgeClickCount(badgeClickCount + 1);
+  mixpanel.track("Badge button is clicked", {
+    'name': "varun2",
+    'badgeClickCount': 1
+  });
+  console.log("badgeClickCount ",badgeClickCount)
+}
 
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
@@ -23,6 +61,8 @@ export default function App() {
           Home
         </Link>
         <Link to="/app/additional">Additional page</Link>
+        <Link to="/app/badges" onClick={handleBadgeClick}>Badges</Link>
+        <Link to="/app/api" onClick={handleAPIClick}>API</Link>
       </ui-nav-menu>
       <Outlet />
     </AppProvider>
