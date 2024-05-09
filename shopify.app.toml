@@ -3,7 +3,7 @@
 client_id = "a96621e5d2c4b26c95805bd5c07c81c4"
 name = "ui25"
 handle = "ui25"
-application_url = "https://basis-html-complaint-minority.trycloudflare.com"
+application_url = "https://cargo-calibration-phrases-termination.trycloudflare.com"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://basis-html-complaint-minority.trycloudflare.com/auth/callback",
-  "https://basis-html-complaint-minority.trycloudflare.com/auth/shopify/callback",
-  "https://basis-html-complaint-minority.trycloudflare.com/api/auth/callback"
+  "https://cargo-calibration-phrases-termination.trycloudflare.com/auth/callback",
+  "https://cargo-calibration-phrases-termination.trycloudflare.com/auth/shopify/callback",
+  "https://cargo-calibration-phrases-termination.trycloudflare.com/api/auth/callback"
 ]
 
 [webhooks]
