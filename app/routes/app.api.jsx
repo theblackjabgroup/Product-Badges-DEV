@@ -12,7 +12,8 @@ import {
   InlineStack,
   Button,
   Page,
-  Text
+  Text,
+  Checkbox
 } from "@shopify/polaris";
 
 let receivedData;
@@ -129,6 +130,7 @@ function BadgeProductMapping(props) {
       "id": formState.productId,
       "displayPosition": selectedPositionToDisplay,
       "displayPage": selectedDisplayPage,
+      "enableHover": enableHover,
     };
     submit(data, { method: "post" });
   }
@@ -138,6 +140,14 @@ function BadgeProductMapping(props) {
   const [selectedPositionToDisplay, setSelectedPositionToDisplay] = useState("TopLeft");
   const pagesToDisplay = ["All", "Home", "Product", "Collection"]
   const positionToDisplay = ["TopLeft", "CenterLeft", "BottomLeft", "TopMiddle", "CenterMiddle", "BottomMiddle", "TopRight", "CenterRight", "BottomRight"]
+  const [enableHover, setEnableHover] = useState(false);
+  function handleHover()
+  {
+    if(enableHover === false)
+    setEnableHover(true);
+    else
+    setEnableHover(false);
+  }
 
   return (
     <Page>
@@ -190,6 +200,11 @@ function BadgeProductMapping(props) {
             <Button variant="plain" onClick={selectProduct}>
               Select product
             </Button>
+            <Checkbox
+            label="Enable Hover"
+            checked={enableHover}
+            onChange={handleHover}
+            />
           </InlineStack>
           <PageActions
             primaryAction={{
