@@ -1,0 +1,44 @@
+/* /app/styles/label.css */
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 70px;
+    gap: 1px;
+  }
+  
+  .grid-item {
+    padding: 5px;
+    border: 0.1rem solid #babfc3;
+    border-radius: 0.25rem;
+    background-color: #fff;
+    height: 60px;
+    width: 60px;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .grid-item-inner {
+    height: 20px;
+    width: 20px;
+    background: #babfc3;
+    border-radius: 0.1rem;
+    position: absolute;
+  }
+  
+  /* Positioning for each grid item inner */
+  .top-left .grid-item-inner { top: 0; left: 0; }
+  .top-center .grid-item-inner { top: 0; left: 50%; transform: translateX(-50%); }
+  .top-right .grid-item-inner { top: 0; right: 0; }
+  
+  .middle-left .grid-item-inner { top: 50%; left: 0; transform: translateY(-50%); }
+  .middle-center .grid-item-inner { top: 50%; left: 50%; transform: translate(-50%, -50%); }
+  .middle-right .grid-item-inner { top: 50%; right: 0; transform: translateY(-50%); }
+  
+  .bottom-left .grid-item-inner { bottom: 0; left: 0; }
+  .bottom-center .grid-item-inner { bottom: 0; left: 50%; transform: translateX(-50%); }
+  .bottom-right .grid-item-inner { bottom: 0; right: 0; }
+  
+  .grid-item.active .grid-item-inner {
+    background-color: blue;
+  }

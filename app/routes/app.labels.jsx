@@ -212,7 +212,7 @@ const Labels = () => {
                 <IndexTable.Cell><Badge tone={isEnabled ? 'success' : 'attention'}> {isEnabled ? <InlineStack gap={100} blockAlign='center'><Icon source={ViewIcon} tone="base" />{isEnabled ? "Enabled" : "Disabled"}</InlineStack> : <InlineStack gap={100} blockAlign='center'><Icon source={HideIcon} tone="base" />{isEnabled ? "Enabled" : "Disabled"}</InlineStack>}</Badge></IndexTable.Cell>
                 <IndexTable.Cell>
                     <InlineStack gap={400}>
-                        <Button variant='plain'><Icon source={EditIcon} tone="base" /></Button>
+                        <Button variant='plain' onClick={() => navigate("/app/create-label")}><Icon source={EditIcon} tone="base" /></Button>
                         <Button onClick={() => handleDelete(id)} variant='plain'><Icon source={DeleteIcon} tone="base" /></Button>
                     </InlineStack>
                 </IndexTable.Cell>

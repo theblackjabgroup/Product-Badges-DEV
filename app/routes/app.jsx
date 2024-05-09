@@ -61,6 +61,7 @@ function handleBadgeClick() {
           Home
         </Link>
         <Link to="/app/additional">Additional page</Link>
+        <Link to="/app/getstarted">Get Started</Link>
         <Link to="/app/badges" onClick={handleBadgeClick}>Badges</Link>
         <Link to="/app/api" onClick={handleAPIClick}>API</Link>
       </ui-nav-menu>
