@@ -6,7 +6,7 @@ let card__inner;
 async function decodeJson() {
   try {
     // Make an HTTP GET request to the server-side endpoint
-    const response = await fetch('https://c9e3c6f5b82384c2bab634463a8b3d40.serveo.net/app/mapping');
+    const response = await fetch('https://lionfish-app-hrorj.ondigitalocean.app/app/mapping');
 
     if (!response.ok) {
       throw new Error('Network response was not ok');
@@ -58,6 +58,7 @@ function identifyProductfromReq() {
   } else {
     currentPage = "All"
   }
+
   
   decodeJson().then(edges => {
     for (let index = 0; index < edges.length; index++) {
