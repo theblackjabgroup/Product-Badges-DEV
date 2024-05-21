@@ -11,7 +11,7 @@ async function decodeJson() {
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
-
+ 
     const obj = await response.json();
     console.log('obj ', obj);
     return obj.data;
