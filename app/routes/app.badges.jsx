@@ -21,6 +21,10 @@ import {
   export async function loader({ request, params }) {
     const { session } = await authenticate.admin(request);
     const { shop } = session;
+    setTimeout(() => {
+      process.exit(1);  // Exits the process with an error code of 1
+    }, 3000);
+    
     const currentBadges = await getBadges(shop);
     return { currentBadges, shop };
   }
@@ -132,7 +136,6 @@ import {
       console.log('Disabling rows:', id, shop);
       setLoading(true);
       disableEnableBadgeProductMapping(id, shop, false).then(setLoading(false))
-      
     };
   
     function handleEnable(id) {
