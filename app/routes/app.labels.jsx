@@ -1,16 +1,11 @@
-import React, { useState } from 'react';
-import {
-    Page, Banner, Button, BlockStack, InlineStack, IndexTable, IndexFilters, useSetIndexFiltersMode, useIndexResourceState, Text, Box, LegacyCard,
-    Icon,
-    Badge,
-    Thumbnail,
-} from '@shopify/polaris'
-import { EditIcon, DeleteIcon, ViewIcon, HideIcon } from '@shopify/polaris-icons';
-import { useLoaderData, useNavigate, useSubmit } from "@remix-run/react"
-import { json } from '@remix-run/node'
-import { authenticate } from "../shopify.server";
-import { getBadges } from "../app.server";
 import db from "../db.server";
+import { json } from '@remix-run/node'
+import { getBadges } from "../app.server";
+import { authenticate } from "../shopify.server";
+import React, { useState } from 'react';
+import { useLoaderData, useNavigate, useSubmit } from "@remix-run/react"
+import { EditIcon, DeleteIcon, ViewIcon, HideIcon } from '@shopify/polaris-icons';
+import { Page, Banner, Button, BlockStack, InlineStack, IndexTable, IndexFilters, useSetIndexFiltersMode, useIndexResourceState, Text, LegacyCard, Icon, Badge, Thumbnail, } from '@shopify/polaris'
 
 
 export async function loader({ request, params }) {
@@ -82,6 +77,7 @@ export async function action({ request, params }) {
     }
 }
 
+
 const Labels = () => {
 
     // Set Mode
@@ -90,6 +86,7 @@ const Labels = () => {
     // Set Badges
     const { currentBadges, shop } = useLoaderData();
     console.log("NIkkcurrentBadges", currentBadges)
+    // console.log(JSON.parse(currentBadges[2].displayPage))
 
     // Selected Resource
     const { selectedResources, allResourcesSelected, handleSelectionChange, removeSelectedResources } = useIndexResourceState(currentBadges);
@@ -122,8 +119,6 @@ const Labels = () => {
     // Items in tab
     const [itemStrings, setItemStrings] = useState([
         'All',
-        'Enable',
-        'Disable'
     ]);
 
     // Delete View
@@ -157,7 +152,7 @@ const Labels = () => {
         console.log('Deleting rows:', id, shop);
         deleteBadgeProductMapping(id, shop)
         removeSelectedResources(selectedResources)
-        
+
     };
 
     // Function to enable disable the status of selected products
@@ -188,38 +183,6 @@ const Labels = () => {
         disableEnableBadgeProductMapping(id, shop, true)
             .then(setLoading(false))
     };
-
-    // Row Markup
-    const rowMarkup = currentBadges ? (currentBadges.map(
-        (
-            { id, productHandle, badgeUrl, isEnabled, productImageUrl },
-            index
-        ) => (
-            <IndexTable.Row
-                id={id} key={id} selected={selectedResources.includes(id)} position={index}>
-                <IndexTable.Cell>{productHandle}</IndexTable.Cell>
-                <IndexTable.Cell>
-                    <Thumbnail
-                        source={productImageUrl}
-                        size='large' />
-                </IndexTable.Cell>
-                <IndexTable.Cell>
-                    <Thumbnail
-                        source={badgeUrl}
-                        size="medium"
-                    />
-                </IndexTable.Cell>
-                <IndexTable.Cell><Badge tone={isEnabled ? 'success' : 'attention'}> {isEnabled ? <InlineStack gap={100} blockAlign='center'><Icon source={ViewIcon} tone="base" />{isEnabled ? "Enabled" : "Disabled"}</InlineStack> : <InlineStack gap={100} blockAlign='center'><Icon source={HideIcon} tone="base" />{isEnabled ? "Enabled" : "Disabled"}</InlineStack>}</Badge></IndexTable.Cell>
-                <IndexTable.Cell>
-                    <InlineStack gap={400}>
-                        <Button variant='plain' onClick={() => navigate("/app/create-label")}><Icon source={EditIcon} tone="base" /></Button>
-                        <Button onClick={() => handleDelete(id)} variant='plain'><Icon source={DeleteIcon} tone="base" /></Button>
-                    </InlineStack>
-                </IndexTable.Cell>
-            </IndexTable.Row>
-        ),
-    )) : console.log("Currently no badges has been created");
-
 
     // Tab Actions
     const tabs = itemStrings.map((item, index) => ({
@@ -301,6 +264,40 @@ const Labels = () => {
                 disabled: false,
                 loading: false,
             };
+
+
+    // Row Markup
+    const rowMarkup = currentBadges ? (currentBadges.map(
+        (
+            { id, productHandle, badgeUrl, isEnabled, productImageUrl },
+            index
+        ) => (
+            <IndexTable.Row
+                id={id} key={id} selected={selectedResources.includes(id)} position={index}>
+                <IndexTable.Cell>{productHandle}</IndexTable.Cell>
+                <IndexTable.Cell>
+                    <Thumbnail
+                        source={productImageUrl}
+                        size='large' />
+                </IndexTable.Cell>
+                <IndexTable.Cell>
+                    <Thumbnail
+                        source={badgeUrl}
+                        size="medium"
+                    />
+                </IndexTable.Cell>
+                <IndexTable.Cell><Badge tone={isEnabled ? 'success' : 'attention'}> {isEnabled ? <InlineStack gap={100} blockAlign='center'><Icon source={ViewIcon} tone="base" />{isEnabled ? "Enabled" : "Disabled"}</InlineStack> : <InlineStack gap={100} blockAlign='center'><Icon source={HideIcon} tone="base" />{isEnabled ? "Enabled" : "Disabled"}</InlineStack>}</Badge></IndexTable.Cell>
+                <IndexTable.Cell>
+                    <InlineStack gap={400}>
+                        <Button variant='plain' onClick={() => navigate(`/app/edit-label/${id}`)}><Icon source={EditIcon} tone="base" /></Button>
+                        <Button onClick={() => handleDelete(id)} variant='plain'><Icon source={DeleteIcon} tone="base" /></Button>
+                    </InlineStack>
+                </IndexTable.Cell>
+            </IndexTable.Row>
+        ),
+    )) : console.log("Currently no badges has been created");
+
+
 
     return (
         <>

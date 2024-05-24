@@ -1,35 +1,15 @@
 document.addEventListener('DOMContentLoaded', function () {
   bdgs_finditems();
-  //  logMessage();
 });
 let card__inner;
 
-async function logMessage() {
-  try {
-    const response = await fetch('https://ide-newspapers-covering-lessons.trycloudflare.com/app/mapping')
-    const obj = await response.json();
-    var c = document.querySelectorAll('.img-tag');
-    if (c) {
-      for (itr = 0; itr < c.length; itr++) {
-        console.log("YOUUU", c[itr]);
-        c[itr].addEventListener('mouseover', function () {
-          console.log("NIKHIOLLL")
-        });
-      }
-    }
-    console.log("checkkkkk", c);
-    console.log("Response recieved from App", obj);
-  }
-  catch (error) {
-    console.error('There was a problem in logMessage', error);
-  }
-}
-
 async function decodeJson() {
+
   try {
     // Make an HTTP GET request to the server-side endpoint
-    const response = await fetch('https://ide-newspapers-covering-lessons.trycloudflare.com/app/mapping');
-
+    console.log("before")
+    const response = await fetch('https://expression-waste-satisfied-law.trycloudflare.com/app/mapping');
+    console.log("after")
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
@@ -73,19 +53,27 @@ function identifyProductfromReq() {
     currentPage = "Collection"
   } else if (currentPageUrl.includes('/products/')) {
     currentPage = "Product"
+  } else if (currentPageUrl.includes('/cart/')) {
+    currentPage = "Cart"
+  } else if (currentPageUrl.includes('/search/')) {
+    currentPage = "Search"
   } else {
     currentPage = "All"
   }
+
   decodeJson().then(edges => {
     for (let index = 0; index < edges.length; index++) {
-      if ((edges[index].displayPage == currentPage || edges[index].displayPage == "All") && edges[index].isEnabled == true && domMAP.has(edges[index].productHandle)) {
-        console.log(
-          'key ',
-          edges[index].productHandle,
-          ' value ',
-          domMAP.get(edges[index].productHandle)
-        );
-        addBadge(domMAP.get(edges[index].productHandle), edges[index].badgeUrl, edges[index].displayPosition, edges[index].isHoverEnabled);
+      const displayPageArr = edges[index].displayPage.split(",");
+      for (let d = 0; d < displayPageArr.length; d++) {
+        if ((displayPageArr[d] == currentPage || displayPageArr[d] == "All") && edges[index].isEnabled == true && domMAP.has(edges[index].productHandle)) {
+          console.log(
+            'key ',
+            edges[index].productHandle,
+            ' value ',
+            domMAP.get(edges[index].productHandle)
+          );
+          addBadge(domMAP.get(edges[index].productHandle), edges[index].badgeUrl, edges[index].displayPosition, edges[index].isHoverEnabled);
+        }
       }
     }
   }).catch(error => {
@@ -172,15 +160,15 @@ function my_badge(imgNode, badgeUrl, displayPosition, isHoverEnabled) {
   var imgDiv = document.createElement('img');
   imgDiv.classList.add("img-tag");
   imgDiv.src = badgeUrl;
-  if (displayPosition == "TopLeft") imgDiv.classList.add("top-left");
-  if (displayPosition == "CenterLeft") imgDiv.classList.add("center-left");
-  if (displayPosition == "BottomLeft") imgDiv.classList.add("bottom-left");
-  if (displayPosition == "TopMiddle") imgDiv.classList.add("top-middle");
-  if (displayPosition == "CenterMiddle") imgDiv.classList.add("center-middle");
-  if (displayPosition == "BottomMiddle") imgDiv.classList.add("bottom-middle");
-  if (displayPosition == "TopRight") imgDiv.classList.add("top-right");
-  if (displayPosition == "MiddleRight") imgDiv.classList.add("middle-right");
-  if (displayPosition == "BottomRight") imgDiv.classList.add("bottom-right");
+  if (displayPosition == "top-left") imgDiv.classList.add("top-left");
+  if (displayPosition == "center-left") imgDiv.classList.add("center-left");
+  if (displayPosition == "bottom-left") imgDiv.classList.add("bottom-left");
+  if (displayPosition == "top-middle") imgDiv.classList.add("top-middle");
+  if (displayPosition == "center-middle") imgDiv.classList.add("center-middle");
+  if (displayPosition == "bottom-middle") imgDiv.classList.add("bottom-middle");
+  if (displayPosition == "top-right") imgDiv.classList.add("top-right");
+  if (displayPosition == "middle-right") imgDiv.classList.add("middle-right");
+  if (displayPosition == "bottom-right") imgDiv.classList.add("bottom-right");
   newDiv.appendChild(imgDiv);
   var parentNode;
   if (imgNode.parentNode.parentNode.parentNode) {

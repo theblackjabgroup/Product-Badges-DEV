@@ -1,16 +1,17 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { Page, Popover, ActionList, InlineStack, Text, Icon, RadioButton, Card, Link, Button, Checkbox } from '@shopify/polaris';
+import '../styles/label.css'
+import { json } from '@remix-run/node';
+import { Modal } from '@shopify/app-bridge-react';
 import { ButtonPressIcon } from '@shopify/polaris-icons';
 import { useLoaderData, useSubmit } from '@remix-run/react';
 import { ANNUAL_PLAN, MONTHLY_PLAN, authenticate } from '../shopify.server';
-import { json } from '@remix-run/node';
-import '../styles/label.css'
-import { PrismaClient } from '@prisma/client';
-import { Modal } from '@shopify/app-bridge-react';
-const prisma = new PrismaClient();
+import React, { useState, useCallback, useEffect } from 'react';
+import { Page, InlineStack, Text, Icon, Card, Button, Checkbox, BlockStack } from '@shopify/polaris';
+import { createOrUpdateBadge } from "../app.server"
+
+
+
 export async function loader({ request }) {
   const { billing } = await authenticate.admin(request);
-
   let plan = { name: "Free" };
 
   // Check if the shop has an active payment for any plan
@@ -34,12 +35,27 @@ export async function loader({ request }) {
   // Return both imageUrl and plan in the JSON response
   return json({ plan });
 }
-const cdnUrl = "https://blackbyttcdn.blr1.digitaloceanspaces.com";
+
+
+
 
 function LabelProductMapping() {
+
+  const { plan } = useLoaderData();
+  const isOnPaidPlan = plan.name !== 'Free';
+
   const [imageUrls, setImageUrls] = useState([]);
 
+  const [cdnUrl, setCdnurl] = useState(null)
+
   useEffect(() => {
+
+    if (!isOnPaidPlan) {
+      setCdnurl('https://blackbyttpaidbadges.blr1.digitaloceanspaces.com')
+    } else {
+      setCdnurl('https://blackbyttcdn.blr1.digitaloceanspaces.com')
+    }
+
     async function fetchData() {
       try {
         const response = await fetch(cdnUrl);
@@ -57,7 +73,6 @@ function LabelProductMapping() {
             value: `${cdnUrl}/${keyText}`
           };
         });
-
         setImageUrls(results);
       } catch (error) {
         console.error('Error fetching and parsing XML:', error);
@@ -65,7 +80,7 @@ function LabelProductMapping() {
     }
 
     fetchData();
-  }, []);
+  }, [isOnPaidPlan, cdnUrl]);
 
   return imageUrls;
 }
@@ -75,58 +90,16 @@ export async function action({ request }) {
 
   const { session } = await authenticate.admin(request);
   const { shop } = session;
-
-  const formData = await request.formData();
-  const productHandle = formData.get('productHandle');
-  const labelName = formData.get('badge_name');
-  const labelUrl = formData.get('badge_url');
-  const productId = formData.get('id')
-  const displayPosition = formData.get('displayPosition')
-  const displayPage = formData.get('displayPage')
-  const productImageUrl = formData.get('productImageUrl')
   try {
-    // Check if a label already exists for the given productHandle and shop
-    const existingLabel = await prisma.badge.findUnique({
-      where: {
-        // Composite key
-        id: productId,
-        shop: shop
+    const labelProductObjs = {
+      ...Object.fromEntries(await request.formData()),
+      shop,
+    };
 
-      }
-    });
-
-    if (existingLabel) {
-      // Update existing label
-      const updatedLabel = await prisma.badge.update({
-        where: {
-          id: productId,
-          shop: shop
-        }
-        ,
-        data: {
-          badgeName: labelName,
-          badgeUrl: labelUrl
-        }
-      });
-      console.log("Updating existing label:", updatedLabel);
-    } else {
-      // Create new label
-      const newLabel = await prisma.badge.create({
-        data: {
-          id: productId,
-          isEnabled: true,
-          displayPage: displayPage,
-          displayPosition: displayPosition,
-          productHandle: productHandle,
-          productImageUrl: productImageUrl,
-          badgeName: labelName,
-          badgeUrl: labelUrl,
-          shop: shop
-        }
-      });
-      console.log("Creating new label:", newLabel);
-    }
-    return json({ ok: true, message: "Label processed successfully." });
+    console.log("object ", labelProductObjs)
+    const arrayToIterate = [labelProductObjs];
+    const result = createOrUpdateBadge(arrayToIterate);
+    return result;
   } catch (error) {
     console.error("Error processing label:", error);
     return new Response("Internal Server Error", error);
@@ -135,34 +108,56 @@ export async function action({ request }) {
 
 
 export default function CreateLabelPage() {
-  // States for each checkbox
+
   const { plan } = useLoaderData();
+
   const isOnPaidPlan = plan.name !== 'Free';
+  console.log(isOnPaidPlan)
+
   const [selectImageState, setSelectImageState] = useState(plan)
+
+  // Checkboxes
+  const [selectedDisplayPage, setSelectedDisplayPage] = useState(["All"]);
   const [isProductPageChecked, setIsProductPageChecked] = useState(false);
+  const [isCollectionPageChecked, setIsCollectionPageChecked] = useState(false);
+  const [isSearchResultPageChecked, setIsSearchResultPageChecked] = useState(false);
+  const [isOtherPageChecked, setIsOtherPageChecked] = useState(false);
   const [isHomePageChecked, setIsHomePageChecked] = useState(false);
   const [isCartPageChecked, setIsCartPageChecked] = useState(false);
-  const [isAllImagesOnProductPageChecked, setAllImagesOnProductPageChecked] = useState(true);
-  const [isSelectedImagesonProductChecked, setSelectedImagesonProductChecked] = useState(false)
+
+
+  const addPage = useCallback((page) => {
+    setSelectedDisplayPage((prevPages) => [...prevPages, page]);
+  }, []);
+
+  const removePage = useCallback((page) => {
+    setSelectedDisplayPage((prevPages) => prevPages.filter(p => p !== page));
+  }, []);
+
+
   // Handlers for each checkbox
-  const handleProductPageChange = useCallback((newChecked) => setIsProductPageChecked(newChecked), []);
-  const handleHomePageChange = useCallback((newChecked) => setIsHomePageChecked(newChecked), []);
-  const handleCartPageChange = useCallback((newChecked) => setIsCartPageChecked(newChecked), []);
-  // Corrected handler for the radio button
-  const handleAllImagesOnProductPageChange = useCallback(() => {
-    // setAllImagesOnProductPageChecked(true);
-  }, []);
-  const handleSelectedImagesOnProductPageChange = useCallback(() => {
-    // setAllImagesOnProductPageChecked(true);
-  }, []);
+  const handleDisplayPageChange = useCallback((page, isChecked, setIsChecked) => {
+    return () => {
+      setIsChecked(!isChecked);
+      if (isChecked) {
+        removePage(page);
+      } else {
+        addPage(page);
+      }
+    };
+  }, [addPage, removePage]);
+
+
+  // Hover
+  const [enableHover, setEnableHover] = useState(false);
+  function handleHover() { setEnableHover(!enableHover) }
 
   const [showImages, setShowImages] = useState(false);
   const imageUrls = LabelProductMapping();
   const [selectedLabelUrl, setSelectedLabelUrl] = useState('');
   const [selectedLabelName, setSelectedLabelName] = useState('')
-  const [popoverActive, setPopoverActive] = useState(false);
   const [labelStyle, setLabelStyle] = useState({});
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const handleItemClick = (index) => {
     setActiveIndex(index); // Set the clicked item as active'
@@ -177,97 +172,70 @@ export default function CreateLabelPage() {
   const handlePositionChange = (position) => {
     switch (position) {
       case 1:
-        setLabelStyle({ top: 'auto', left: '11px', maxWidth: '100px' });
+        setLabelStyle({ top: '0', left: '0', maxWidth: '100px' });
         break;
       case 2:
-        setLabelStyle({ top: 'auto', left: '200px', transform: 'translateX(-50%)', maxWidth: '100px' });
+        setLabelStyle({ top: '0', left: '50%', transform: 'translateX(-50%)', maxWidth: '100px' });
         break;
       case 3:
-        setLabelStyle({ top: 'auto', right: '62px', maxWidth: '100px' });
+        setLabelStyle({ top: '0', right: '0', maxWidth: '100px' });
         break;
       case 4:
-        setLabelStyle({ top: '50%', left: '11px', transform: 'translateY(-50%)', maxWidth: '100px' });
+        setLabelStyle({ top: '50%', left: '0', transform: 'translateY(-50%)', maxWidth: '100px' });
         break;
       case 5:
-        setLabelStyle({ top: '50%', left: '45%', transform: 'translate(-50%, -50%)', maxWidth: '100px' });
+        setLabelStyle({ top: '50%', left: '50%', transform: 'translate(-50%, -50%)', maxWidth: '100px' });
         break;
       case 6:
-        setLabelStyle({ top: '50%', right: '62px', transform: 'translateY(-50%)', maxWidth: '100px' });
+        setLabelStyle({ top: '50%', right: '0', transform: 'translateY(-50%)', maxWidth: '100px' });
         break;
       case 7:
-        setLabelStyle({ bottom: '5%', left: '11px', maxWidth: '100px' });
+        setLabelStyle({ bottom: '0', left: '0', maxWidth: '100px' });
         break;
       case 8:
-        setLabelStyle({ bottom: '5%', left: '45%', transform: 'translateX(-50%)', maxWidth: '100px' });
+        setLabelStyle({ bottom: '0', left: '50%', transform: 'translateX(-50%)', maxWidth: '100px' });
         break;
       case 9:
-        setLabelStyle({ bottom: '5%', right: '62px', maxWidth: '100px' });
+        setLabelStyle({ bottom: '0', right: '0', maxWidth: '100px' });
         break;
       default:
         setLabelStyle({});
         break;
     }
   }
-
-
-  const togglePopoverActive = useCallback(
-    () => setPopoverActive((popoverActive) => !popoverActive),
-    []
-  );
-
-
   const handleLabelChange = (labelUrl) => {
     const selectedLabel = imageUrls.find(image => image.value === labelUrl);
     if (selectedLabel) {
       setSelectedLabelUrl(selectedLabel.value);
       setSelectedLabelName(selectedLabel.label);
-      togglePopoverActive(); // Close popover after selection
     }
-  };
-
-  const activator = (
-    <Button fullWidth onClick={togglePopoverActive} disclosure>
-      Select Label<Icon source={ButtonPressIcon} tone="base" />
-    </Button>
-  );
-
-  // Function to render grid of images
-  const renderGrid = (imageUrls) => {
-    // Split the array of images into chunks of 3 for grid layout
-    const rows = [];
-    for (let i = 0; i < imageUrls.length; i += 3) {
-      rows.push(imageUrls.slice(i, i + 3));
-    }
-
-    return rows.map((row, rowIndex) => (
-      <InlineStack key={rowIndex} spacing="tight">
-        {row.map((image, index) => (
-          <button
-            key={index}
-            onClick={() => handleLabelChange(image.value)}
-            style={{ background: 'none', border: 'none', padding: '0', cursor: 'pointer' }}
-          >
-            <img src={image.value} alt={image.label} style={{ maxWidth: '100px', margin: '5px' }} />
-          </button>
-        ))}
-      </InlineStack>
-    ));
   };
 
   const submit = useSubmit();
-  function handleSave() {
 
-    const data = {
-      "badge_url": selectedLabelUrl,
-      "badge_name": selectedLabelName || "",
-      "productHandle": selectImageState.productHandle,
-      "productImageUrl": selectImageState.productImage,
-      "id": selectImageState.productId,
-      "displayPosition": positionClasses[activeIndex],
-      "displayPage": "All",
+  function handleSave() {
+    if (selectImageState.productId && (selectedLabelUrl !== '')) {
+      const data = {
+        "badge_url": selectedLabelUrl,
+        "badge_name": selectedLabelName || "",
+        "productHandle": selectImageState.productHandle,
+        "productImageUrl": selectImageState.productImage,
+        "id": selectImageState.productId,
+        "displayPosition": positionClasses[activeIndex],
+        "displayPage": selectedDisplayPage,
+        "enableHover": enableHover,
+      };
+      submit(data, { method: "post" })
+      console.log(data)
+      shopify.toast.show("Saved")
+    } else {
+      shopify.toast.show("Error: Please select product and label before saving")
     }
-    submit(data, { method: "post" });
-    console.log(data)
+  }
+
+
+  const handleSubmit = () => {
+    handleSave()
   }
 
   const handleSelectLabelClick = () => {
@@ -303,6 +271,8 @@ export default function CreateLabelPage() {
   }
 
 
+
+
   return (
     <Page title="Create Label">
       <div className='grid' style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '10px' }}>
@@ -313,111 +283,103 @@ export default function CreateLabelPage() {
             </Text>
           </Card>
           <div style={{ marginTop: '20px' }}>
-
             <Card>
-              <div style={{ marginTop: '10px', marginBottom: '10px' }}>
-                <Button onClick={selectProductImage}>Select Product</Button>
-                <hr />
-              </div>
-              {/* {selectImageState.productImage && (
-              <div style={{ position: 'relative', marginLeft: '60px', padding: '10px' }}>
-                <img src={selectImageState.productImage} alt={selectImageState.productTitle} style={{ width: '400px', height: '300px' }} />
-                {selectedLabelUrl && (
-                  <img src={selectedLabelUrl} alt="Selected Label" style={{ position: 'absolute', top: '0', right: '0', maxWidth: '100px' }} />
-                )}
-              </div>
-            )} */}
               {selectImageState.productImage ? (
-                <div style={{ position: 'relative', marginLeft: '60px', padding: '10px' }}>
-                  <img src={selectImageState.productImage} alt={selectImageState.productTitle} style={{ width: '400px', height: '300px' }} />
+                <div style={{ position: 'relative', width: 'fit-content', height: 'fit-content', margin: '0 auto', padding: '0' }}>
+                  <img src={selectImageState.productImage} alt={selectImageState.productTitle} style={{ background: "rgba(0,0,0,0.5)", height: '350px', objectFit: "contain", objectPosition: 'center' }} />
                   {selectedLabelUrl && (
                     <img src={selectedLabelUrl} alt="Selected Label" style={{ position: 'absolute', ...labelStyle, maxWidth: '100px' }} />
                   )}
                 </div>
-              ) : ''}
-              <hr />
-              <div>
-                <Button onClick={handleSave}>Save Mapping</Button>
+              ) : <img src='https://dummyimage.com/400x400/f2f2f2/b0b0b0.jpg&text=select+product' alt='select-product' style={{ width: '100%', maxHeight: '400px', margin: '0 auto', objectFit: "contain", objectPosition: 'center' }} />}
+              <div style={{ margin: '1rem auto' }}>
+                <InlineStack align='center'>
+                  <Button variant='primary' onClick={selectProductImage}>Select Product</Button>
+                </InlineStack>
               </div>
             </Card>
           </div>
         </div>
         <div>
           <Card>
-            <Text as="h1" variant="bodyMd">
-              Select and Optimize Label
-            </Text>
-            <div style={{ marginTop: '10px' }}>
+            <BlockStack gap={400}>
+              <Text as="h1" variant="bodyMd">
+                Select and Optimize Label
+              </Text>
+
               <Button variant='primary' fullWidth onClick={() => shopify.modal.show('my-modal')}>
                 <InlineStack align='center' blockAlign='center' gap={200}>
                   Select Label
                   <Icon source={ButtonPressIcon} tone="base" />
                 </InlineStack>
               </Button>
-            </div>
-            <div>
-              <div className="grid-container">
-                {Array.from({ length: 9 }, (_, index) => (
-                  <div
-                    key={index}
-                    className={`grid-item ${positionClasses[index]} ${activeIndex === index ? 'active' : ''}`}
-                    onClick={() => handleItemClick(index)}
-                  >
-                    <div className="grid-item-inner"></div>
-                  </div>
-                ))}
+
+              <div>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', justifyContent: 'center' }}>
+                  {Array.from({ length: 9 }, (_, index) => (
+                    <div
+                      key={index}
+                      style={{ border: `1px solid ${activeIndex === index ? '#0269E3' : '#b0b0b0'}`, width: '100%', height: '60px', borderRadius: '0.25rem', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', cursor: 'pointer', backgroundColor: `${activeIndex === index ? '#0269E3' : 'white'}`, color: `${activeIndex === index ? '#fff' : 'black'}` }}
+                      onClick={() => handleItemClick(index)}
+                    >
+                      {/* <div className="grid-item-inner"></div> */}
+                      <p style={{ textTransform: 'capitalize', textAlign: 'center', fontWeight: 'bold', fontSize: '10px' }}>{positionClasses[index]}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
+              <Text variant='headingMd'>
+                CONDITIONS
+              </Text>
 
+              <InlineStack gap={400} blockAlign='center'>
+                <p>Hover Effect</p>
+                <label className="hoverSwitchContainer">
+                  <input type="checkbox" checked={enableHover} onChange={handleHover} />
+                  <span className="slider"></span>
+                </label>
+              </InlineStack>
 
-            <div className='label-page-selection' style={{ textAlign: 'left', marginTop: '10px' }}>
-              <Text as="h3" variant="bodyMd" bold><strong>Show Label On</strong></Text>
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                 <Checkbox
                   label="Product Page"
                   checked={isProductPageChecked}
-                  onChange={handleProductPageChange}
+                  onChange={handleDisplayPageChange("Product", isProductPageChecked, setIsProductPageChecked)}
+                />
+                <Checkbox
+                  label="Collection Page"
+                  checked={isCollectionPageChecked}
+                  onChange={handleDisplayPageChange("Collection", isCollectionPageChecked, setIsCollectionPageChecked)}
+                />
+                <Checkbox
+                  label="Search Result Page"
+                  checked={isSearchResultPageChecked}
+                  onChange={handleDisplayPageChange("Search", isSearchResultPageChecked, setIsSearchResultPageChecked)}
                 />
                 <Checkbox
                   label="Home Page"
                   checked={isHomePageChecked}
-                  onChange={handleHomePageChange}
+                  onChange={handleDisplayPageChange("Home", isHomePageChecked, setIsHomePageChecked)}
                 />
                 <Checkbox
                   label="Cart Page"
                   checked={isCartPageChecked}
-                  onChange={handleCartPageChange}
+                  onChange={handleDisplayPageChange("Cart", isCartPageChecked, setIsCartPageChecked)}
+                />
+                <Checkbox
+                  label="Other Page"
+                  checked={isOtherPageChecked}
+                  onChange={handleDisplayPageChange("Other", isOtherPageChecked, setIsOtherPageChecked)}
                 />
               </div>
-              <hr />
-            </div>
-            <div className='image-for-label-selection' style={{ marginTop: '10px' }}>
-              <Text as="h3" variant="bodyMd" bold><strong>On Pages Show Label on</strong></Text>
-              <div>
-                <RadioButton
-                  label="All Images"
-                  checked={isAllImagesOnProductPageChecked}
-                  id="enabled"
-                  // Since you want it always enabled, you don't provide a way to change its state
-                  onChange={handleAllImagesOnProductPageChange}
-                />
-              </div>
-              <div>
-                <RadioButton
-                  disabled={!isOnPaidPlan}
-                  label="Selected Images"
-                  checked={isSelectedImagesonProductChecked}
-                  id="enabled"
-                  // Since you want it always enabled, you don't provide a way to change its state
-                  onChange={handleSelectedImagesOnProductPageChange}
-                />
-              </div>
-              {isOnPaidPlan ? '' : <Link url="/app/payments">Upgrade</Link>}
-              <hr />
-            </div>
+              <InlineStack align='center'>
+                <Button fullWidth={false} tone='success' variant='primary' onClick={handleSubmit}>Save</Button>
+              </InlineStack>
+            </BlockStack>
           </Card>
         </div>
-      </div>
+      </div >
+
       <Modal id="my-modal">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', padding: '10px' }}>
           {imageUrls.map((image, index) => (
@@ -431,7 +393,6 @@ export default function CreateLabelPage() {
           ))}
         </div>
       </Modal>
-
-    </Page>
+    </Page >
   );
 }

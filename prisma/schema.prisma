@@ -30,7 +30,7 @@ model Badge {
   badgeName        String      
   badgeUrl         String 
   displayPosition  String
-  displayPage      String 
+  displayPage      String?
   isEnabled        Boolean
   isHoverEnabled   Boolean
   shop             String

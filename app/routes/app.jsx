@@ -5,6 +5,8 @@ import { AppProvider } from "@shopify/shopify-app-remix/react";
 import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 import { authenticate } from "../shopify.server";
 
+
+
 import {Page, Button} from '@shopify/polaris';
 import mixpanel from 'mixpanel-browser';
 import { useState } from "react";
@@ -62,8 +64,10 @@ function handleBadgeClick() {
         </Link>
         <Link to="/app/additional">Additional page</Link>
         <Link to="/app/payments">Payments - Yash</Link>
+
         <Link to="/app/labels">Labels - Sharad</Link>
         <Link to="/app/create-label">Create Label - Sharad</Link>
+        <Link to="/app/create-label">Edit Label - Sharad</Link>
         <Link to="/app/getstarted">Get Started - Sharad</Link>
 
         <Link to="/app/badges" onClick={handleBadgeClick}>Badges - nikhil</Link>

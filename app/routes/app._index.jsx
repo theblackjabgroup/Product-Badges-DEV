@@ -1,329 +1,137 @@
-import { useEffect } from "react";
-import { json } from "@remix-run/node";
-import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
-import {
-  Page,
-  Layout,
-  Text,
-  Card,
-  Button,
-  BlockStack,
-  Box,
-  List,
-  Link,
-  InlineStack,
-} from "@shopify/polaris";
-import { authenticate } from "../shopify.server";
 
-export const loader = async ({ request }) => {
-  await authenticate.admin(request);
+import { BlockStack, Button, Card, Icon, InlineGrid, InlineStack, Page, Text } from '@shopify/polaris';
+import step_one from '../assets/step_one.png'
+import step_two from '../assets/step_two.png'
+import step_three from '../assets/step_three.png'
+import support from '../assets/1.png'
+import mixpanel from 'mixpanel-browser';
+import { usePlan } from './app.plancontext';
+import { useEffect } from 'react';
+import { NoteIcon } from '@shopify/polaris-icons';
+import '../styles/label.css'
+// edit your token here
+const TOKEN = 'YOUR_TOKEN'
 
-  return null;
-};
+// edit you user id here
+const UserID = 'SHARAD_JADHAV'
 
-export const action = async ({ request }) => {
-  const { admin } = await authenticate.admin(request);
-  const color = ["Red", "Orange", "Yellow", "Green"][
-    Math.floor(Math.random() * 4)
-  ];
-  const response = await admin.graphql(
-    `#graphql
-      mutation populateProduct($input: ProductInput!) {
-        productCreate(input: $input) {
-          product {
-            id
-            title
-            handle
-            status
-            variants(first: 10) {
-              edges {
-                node {
-                  id
-                  price
-                  barcode
-                  createdAt
-                }
-              }
-            }
-          }
-        }
-      }`,
-    {
-      variables: {
-        input: {
-          title: `${color} Snowboard`,
-        },
-      },
-    },
-  );
-  const responseJson = await response.json();
-  const variantId =
-    responseJson.data.productCreate.product.variants.edges[0].node.id;
-  const variantResponse = await admin.graphql(
-    `#graphql
-      mutation shopifyRemixTemplateUpdateVariant($input: ProductVariantInput!) {
-        productVariantUpdate(input: $input) {
-          productVariant {
-            id
-            price
-            barcode
-            createdAt
-          }
-        }
-      }`,
-    {
-      variables: {
-        input: {
-          id: variantId,
-          price: Math.random() * 100,
-        },
-      },
-    },
-  );
-  const variantResponseJson = await variantResponse.json();
 
-  return json({
-    product: responseJson.data.productCreate.product,
-    variant: variantResponseJson.data.productVariantUpdate.productVariant,
-  });
-};
+// initialize mixpanel
+mixpanel.init(TOKEN, { debug: true, track_pageview: true, ignore_dnt: true, ip: true });
+
+// Set User Id
+mixpanel.identify(UserID)
+
 
 export default function Index() {
-  const nav = useNavigation();
-  const actionData = useActionData();
-  const submit = useSubmit();
-  const isLoading =
-    ["loading", "submitting"].includes(nav.state) && nav.formMethod === "POST";
-  const productId = actionData?.product?.id.replace(
-    "gid://shopify/Product/",
-    "",
-  );
+
 
   useEffect(() => {
-    if (productId) {
-      shopify.toast.show("Product created");
-    }
-  }, [productId]);
-  const generateProduct = () => submit({}, { replace: true, method: "POST" });
+    // Function to fetch and log the POS user details
+    const fetchPOSUser = async () => {
+      try {
+        const posUser = await shopify.user();
+        console.log('POS User Details:', posUser);
+      } catch (error) {
+        console.error('Error fetching POS user details:', error);
+      }
+    };
+
+    fetchPOSUser();
+  }, []);
+
+
+  const { isOnPaidPlan } = usePlan()
+  console.log(isOnPaidPlan)
+
+  // Trigger the Mixpanel Track Event
+  const triggerMixPanel = (UniqueIdentifier, key, value) => {
+    mixpanel.track(UniqueIdentifier, {
+      [key]: value
+    })
+    console.log(UniqueIdentifier)
+    // Uncomment this function and paas one more parameter 'url' to navigate
+    // navigate(url)
+
+  }
+
 
   return (
     <Page>
-      <ui-title-bar title="Remix app template">
-        <button variant="primary" onClick={generateProduct}>
-          Generate a product
-        </button>
-      </ui-title-bar>
-      <BlockStack gap="500">
-        <Layout>
-          <Layout.Section>
-            <Card>
-              <BlockStack gap="500">
-                <BlockStack gap="200">
-                  <Text as="h2" variant="headingMd">
-                    Congrats on creating a new Shopify app 🎉
-                  </Text>
-                  <Text variant="bodyMd" as="p">
-                    This embedded app template uses{" "}
-                    <Link
-                      url="https://shopify.dev/docs/apps/tools/app-bridge"
-                      target="_blank"
-                      removeUnderline
-                    >
-                      App Bridge
-                    </Link>{" "}
-                    interface examples like an{" "}
-                    <Link url="/app/additional" removeUnderline>
-                      additional page in the app nav
-                    </Link>
-                    , as well as an{" "}
-                    <Link
-                      url="https://shopify.dev/docs/api/admin-graphql"
-                      target="_blank"
-                      removeUnderline
-                    >
-                      Admin GraphQL
-                    </Link>{" "}
-                    mutation demo, to provide a starting point for app
-                    development.
-                  </Text>
-                </BlockStack>
-                <BlockStack gap="200">
-                  <Text as="h3" variant="headingMd">
-                    Get started with products
-                  </Text>
-                  <Text as="p" variant="bodyMd">
-                    Generate a product with GraphQL and get the JSON output for
-                    that product. Learn more about the{" "}
-                    <Link
-                      url="https://shopify.dev/docs/api/admin-graphql/latest/mutations/productCreate"
-                      target="_blank"
-                      removeUnderline
-                    >
-                      productCreate
-                    </Link>{" "}
-                    mutation in our API references.
-                  </Text>
-                </BlockStack>
-                <InlineStack gap="300">
-                  <Button loading={isLoading} onClick={generateProduct}>
-                    Generate a product
-                  </Button>
-                  {actionData?.product && (
-                    <Button
-                      url={`shopify:admin/products/${productId}`}
-                      target="_blank"
-                      variant="plain"
-                    >
-                      View product
-                    </Button>
-                  )}
-                </InlineStack>
-                {actionData?.product && (
-                  <>
-                    <Text as="h3" variant="headingMd">
-                      {" "}
-                      productCreate mutation
-                    </Text>
-                    <Box
-                      padding="400"
-                      background="bg-surface-active"
-                      borderWidth="025"
-                      borderRadius="200"
-                      borderColor="border"
-                      overflowX="scroll"
-                    >
-                      <pre style={{ margin: 0 }}>
-                        <code>
-                          {JSON.stringify(actionData.product, null, 2)}
-                        </code>
-                      </pre>
-                    </Box>
-                    <Text as="h3" variant="headingMd">
-                      {" "}
-                      productVariantUpdate mutation
-                    </Text>
-                    <Box
-                      padding="400"
-                      background="bg-surface-active"
-                      borderWidth="025"
-                      borderRadius="200"
-                      borderColor="border"
-                      overflowX="scroll"
-                    >
-                      <pre style={{ margin: 0 }}>
-                        <code>
-                          {JSON.stringify(actionData.variant, null, 2)}
-                        </code>
-                      </pre>
-                    </Box>
-                  </>
-                )}
-              </BlockStack>
-            </Card>
-          </Layout.Section>
-          <Layout.Section variant="oneThird">
-            <BlockStack gap="500">
-              <Card>
-                <BlockStack gap="200">
-                  <Text as="h2" variant="headingMd">
-                    App template specs
-                  </Text>
-                  <BlockStack gap="200">
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        Framework
-                      </Text>
-                      <Link
-                        url="https://remix.run"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        Remix
-                      </Link>
-                    </InlineStack>
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        Database
-                      </Text>
-                      <Link
-                        url="https://www.prisma.io/"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        Prisma
-                      </Link>
-                    </InlineStack>
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        Interface
-                      </Text>
-                      <span>
-                        <Link
-                          url="https://polaris.shopify.com"
-                          target="_blank"
-                          removeUnderline
-                        >
-                          Polaris
-                        </Link>
-                        {", "}
-                        <Link
-                          url="https://shopify.dev/docs/apps/tools/app-bridge"
-                          target="_blank"
-                          removeUnderline
-                        >
-                          App Bridge
-                        </Link>
-                      </span>
-                    </InlineStack>
-                    <InlineStack align="space-between">
-                      <Text as="span" variant="bodyMd">
-                        API
-                      </Text>
-                      <Link
-                        url="https://shopify.dev/docs/api/admin-graphql"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        GraphQL API
-                      </Link>
-                    </InlineStack>
-                  </BlockStack>
-                </BlockStack>
-              </Card>
-              <Card>
-                <BlockStack gap="200">
-                  <Text as="h2" variant="headingMd">
-                    Next steps
-                  </Text>
-                  <List>
-                    <List.Item>
-                      Build an{" "}
-                      <Link
-                        url="https://shopify.dev/docs/apps/getting-started/build-app-example"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        {" "}
-                        example app
-                      </Link>{" "}
-                      to get started
-                    </List.Item>
-                    <List.Item>
-                      Explore Shopify’s API with{" "}
-                      <Link
-                        url="https://shopify.dev/docs/apps/tools/graphiql-admin-api"
-                        target="_blank"
-                        removeUnderline
-                      >
-                        GraphiQL
-                      </Link>
-                    </List.Item>
-                  </List>
-                </BlockStack>
-              </Card>
+      <BlockStack gap="400">
+        <Text variant="headingXl" as="h4">
+          Welcome to Our Product Badges and Labels
+        </Text>
+
+        <InlineGrid gap="400" columns={3}>
+          <Card>
+            <BlockStack align='space-between' gap={800} inlineAlign='center'>
+              <img alt="" width="100%" height="100%" style={{ objectFit: 'cover', objectPosition: 'center', maxHeight: '300px' }} src={step_one} />
+              <Text variant='headingMd' alignment='justify'>Step 1 : Integrate our app into your Shopify theme.</Text>
+              <p style={{ textAlign: 'justify' }}>Click on the "Enabled app embed" button below to open the Theme Editor page, toggle on our app to activate it, and click "Save".</p>
+              <Button variant='primary'>Enable App Embed</Button>
             </BlockStack>
-          </Layout.Section>
-        </Layout>
+          </Card>
+          <Card>
+            <BlockStack align='space-between' gap={800} inlineAlign='center'>
+              <img alt="" width="100%" height="100%" style={{ objectFit: 'cover', objectPosition: 'center', maxHeight: '300px' }} src={step_two} />
+              <Text variant='headingMd' alignment='justify'>Step 2: Create your label.</Text>
+              <p style={{ textAlign: 'justify' }}>Click on the "Labels" tab, then "Create" to start the process, and customize the label to suit your specific needs. If you wish to create more campaigns, select their respective tabs.</p>
+              <Button variant='primary'>Create Label</Button>
+            </BlockStack>
+          </Card>
+          <Card>
+            <BlockStack align='space-between' gap={800} inlineAlign='center'>
+              <img alt="" width="100%" height="100%" style={{ objectFit: 'cover', objectPosition: 'center', maxHeight: '300px' }} src={step_three} />
+              <Text variant='headingMd' alignment='justify'>Step 3: Publish your label.</Text>
+              <p style={{ textAlign: 'justify' }}>After customizing, make sure to save and activate the label so that it can appear on your store. If your label doesn't show up on your theme, please contact us to resolve the issue.</p>
+              <Button variant='primary'>Manage Label</Button>
+            </BlockStack>
+          </Card>
+        </InlineGrid>
+        {/* <Grid> */}
+        {/* <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 6, xl: 6 }}> */}
+        <Card padding={600}>
+          <InlineStack wrap={false} gap={400}>
+            <Icon
+              source={NoteIcon}
+              tone="base"
+            />
+            <InlineStack gap={'1200'} wrap={false}>
+              <BlockStack align='space-between' >
+                <strong>Installation Guide</strong>
+                <p>Easily install Shopify Badges and Labels. Check our installation guide for more details.</p>
+              </BlockStack>
+              <button style={{}} className='ReadInstallationGuideButton'>Read Installation Guide</button>
+            </InlineStack>
+          </InlineStack>
+        </Card>
+        {/* </Grid.Cell> */}
+        {/* <Grid.Cell columnSpan={{ xs: 6, sm: 3, md: 3, lg: 6, xl: 6 }}> */}
+        <Card>
+          <InlineStack align='space-between' blockAlign='start'>
+            <BlockStack gap={300} inlineAlign='start' align='space-between'>
+              <Text variant='headingLg'>
+                Support
+              </Text>
+              <p style={{ color: '#5C5F62' }} variant='bodyLg'>
+                Connect with Black Jab Group
+              </p>
+              <p style={{ color: '#5C5F62' }}>
+                theblackjabgroup@gmail.com
+              </p>
+              <a target='_blank' variant={'primary'} href={`https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=theblackjabgroup@gmail.com&su=BADGE%20LABEL%20SUPPORT`} rel="noreferrer">
+                <Button onClick={() => triggerMixPanel('Contact', 'Contact', 'Contact Button Clicked')} variant='primary'>
+                  Contact
+                </Button>
+              </a>
+            </BlockStack>
+            <img width={125} src={support} alt="" />
+          </InlineStack>
+        </Card>
+        {/* </Grid.Cell> */}
+        {/* </Grid> */}
+
       </BlockStack>
     </Page>
   );

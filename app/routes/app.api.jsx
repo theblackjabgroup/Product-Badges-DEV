@@ -1,5 +1,5 @@
 import { json } from '@remix-run/node'
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { authenticate } from "../shopify.server";
 import { xml2json } from 'xml-js';
 import { createOrUpdateBadge } from "../app.server"
@@ -38,7 +38,9 @@ export async function action({ request, params }) {
 }
 
 const cdnUrl = "https://blackbyttcdn.blr1.digitaloceanspaces.com";
+
 function BadgeProductMapping(props) {
+  
   const [imageUrls, setImageUrl] = useState([]);
   const [selectedOption, setSelectedOption] = useState({ label: '', value: '' });
 
@@ -135,18 +137,46 @@ function BadgeProductMapping(props) {
     submit(data, { method: "post" });
   }
 
+  const addPage = useCallback((page) => {
+    setSelectedDisplayPage((prevPages) => [...prevPages, page]);
+  }, []);
+
+  const removePage = useCallback((page) => {
+    setSelectedDisplayPage((prevPages) => prevPages.filter(p => p !== page));
+  }, []);
+
+
+  const handleDisplayPageChange = useCallback((page, isChecked, setIsChecked) => {
+    return () => {
+      setIsChecked(!isChecked);
+      if (isChecked) {
+        removePage(page);
+      } else {
+        addPage(page);
+      }
+    };
+  }, [addPage, removePage]);
+
+
   const { label, name, ...rest } = props;
-  const [selectedDisplayPage, setSelectedDisplayPage] = useState("All");
   const [selectedPositionToDisplay, setSelectedPositionToDisplay] = useState("TopLeft");
-  const pagesToDisplay = ["All", "Home", "Product", "Collection"]
   const positionToDisplay = ["TopLeft", "CenterLeft", "BottomLeft", "TopMiddle", "CenterMiddle", "BottomMiddle", "TopRight", "CenterRight", "BottomRight"]
   const [enableHover, setEnableHover] = useState(false);
-  function handleHover()
-  {
-    if(enableHover === false)
-    setEnableHover(true);
+
+
+  const [selectedDisplayPage, setSelectedDisplayPage] = useState(["All"]);
+  const [isProductPageChecked, setIsProductPageChecked] = useState(false);
+  const [isCollectionPageChecked, setIsCollectionPageChecked] = useState(false);
+  const [isSearchResultPageChecked, setIsSearchResultPageChecked] = useState(false);
+  const [isOtherPageChecked, setIsOtherPageChecked] = useState(false);
+  const [isHomePageChecked, setIsHomePageChecked] = useState(false);
+  const [isCartPageChecked, setIsCartPageChecked] = useState(false);
+
+  function handleHover() {
+    if (enableHover === false)
+      setEnableHover(true);
     else
-    setEnableHover(false);
+      setEnableHover(false);
   }
 
   return (
@@ -170,18 +200,41 @@ function BadgeProductMapping(props) {
               <p>No option selected</p>
             )}
           </InlineStack>
-          <InlineStack>
-            <Text as={"h3"} variant="headingLg">
-              Select Display Page
-            </Text>
-            <select onChange={(e) => setSelectedDisplayPage(e.target.options[e.target.selectedIndex].text)}>
-              {
-                pagesToDisplay.map((option) => (
-                  <option key={option} value={option}>{option}</option>
-                ))
-              }
-            </select>
-          </InlineStack>
+          <Text as={"h3"} variant="headingLg">
+            Select Display Page
+          </Text>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+            <Checkbox
+              label="Product Page"
+              checked={isProductPageChecked}
+              onChange={handleDisplayPageChange("Product", isProductPageChecked, setIsProductPageChecked)}
+            />
+            <Checkbox
+              label="Collection Page"
+              checked={isCollectionPageChecked}
+              onChange={handleDisplayPageChange("Collection", isCollectionPageChecked, setIsCollectionPageChecked)}
+            />
+            <Checkbox
+              label="Search Result Page"
+              checked={isSearchResultPageChecked}
+              onChange={handleDisplayPageChange("Search", isSearchResultPageChecked, setIsSearchResultPageChecked)}
+            />
+            <Checkbox
+              label="Home Page"
+              checked={isHomePageChecked}
+              onChange={handleDisplayPageChange("Home", isHomePageChecked, setIsHomePageChecked)}
+            />
+            <Checkbox
+              label="Cart Page"
+              checked={isCartPageChecked}
+              onChange={handleDisplayPageChange("Cart", isCartPageChecked, setIsCartPageChecked)}
+            />
+            <Checkbox
+              label="Other Page"
+              checked={isOtherPageChecked}
+              onChange={handleDisplayPageChange("Other", isOtherPageChecked, setIsOtherPageChecked)}
+            />
+          </div>
           <InlineStack>
             <Text as={"h3"} variant="headingLg">
               Select Position Of the Badge
@@ -201,9 +254,9 @@ function BadgeProductMapping(props) {
               Select product
             </Button>
             <Checkbox
-            label="Enable Hover"
-            checked={enableHover}
-            onChange={handleHover}
+              label="Enable Hover"
+              checked={enableHover}
+              onChange={handleHover}
             />
           </InlineStack>
           <PageActions
