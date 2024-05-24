@@ -26,10 +26,11 @@ export async function createOrUpdateBadge(arrayToIterate) {
           displayPosition: obj.displayPosition,
           displayPage: obj.displayPage,
           isEnabled: true,
+          isHoverEnabled: Boolean(obj.enableHover),
           shop: obj.shop,
         };
             const badge = await db.Badge.findFirst({
-              where: { productHandle: prodHandle, shop: obj.shop },
+              where: { id: prodId, shop: obj.shop },
             });
             if (!badge) {
               const createdMapping = await db.badge.create({ data });
@@ -39,7 +40,7 @@ export async function createOrUpdateBadge(arrayToIterate) {
               );
             } else {
               const updatedMapping = await db.badge.update({
-                where: { productHandle: prodHandle },
+                where: { id: prodId },
                 data,
               });
               console.log(

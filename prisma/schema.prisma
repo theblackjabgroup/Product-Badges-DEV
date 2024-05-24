@@ -32,6 +32,7 @@ model Badge {
   displayPosition  String
   displayPage      String 
   isEnabled        Boolean
+  isHoverEnabled   Boolean
   shop             String
   productImageUrl  String
 }

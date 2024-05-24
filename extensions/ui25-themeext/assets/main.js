@@ -6,7 +6,7 @@ let card__inner;
 
 async function logMessage() {
   try {
-    const response = await fetch('https://meat-airplane-days-diana.trycloudflare.com/app/mapping')
+    const response = await fetch('https://ide-newspapers-covering-lessons.trycloudflare.com/app/mapping')
     const obj = await response.json();
     var c = document.querySelectorAll('.img-tag');
     if (c) {
@@ -28,7 +28,7 @@ async function logMessage() {
 async function decodeJson() {
   try {
     // Make an HTTP GET request to the server-side endpoint
-    const response = await fetch('https://meat-airplane-days-diana.trycloudflare.com//app/mapping');
+    const response = await fetch('https://ide-newspapers-covering-lessons.trycloudflare.com/app/mapping');
 
     if (!response.ok) {
       throw new Error('Network response was not ok');

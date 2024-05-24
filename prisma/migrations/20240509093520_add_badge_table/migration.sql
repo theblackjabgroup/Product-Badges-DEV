@@ -19,6 +19,7 @@ CREATE TABLE "Badge" (
     "displayPosition" TEXT NOT NULL,
     "displayPage" TEXT NOT NULL,
     "isEnabled" BOOLEAN NOT NULL,
+    "isHoverEnabled" BOOLEAN NOT NULL,
     "shop" TEXT NOT NULL,
     "productImageUrl" TEXT NOT NULL
 );
