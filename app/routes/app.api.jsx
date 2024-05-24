@@ -158,7 +158,7 @@ function BadgeProductMapping(props) {
 
   const { label, name, ...rest } = props;
   const [selectedPositionToDisplay, setSelectedPositionToDisplay] = useState("TopLeft");
-  const positionToDisplay = ["TopLeft", "CenterLeft", "BottomLeft", "TopMiddle", "CenterMiddle", "BottomMiddle", "TopRight", "CenterRight", "BottomRight"]
+  const positionToDisplay = ["top-left", "center-left", "bottom-left", "top-middle", "center-middle", "bottom-middle", "top-right", "center-right", "bottom-right"]
   const [enableHover, setEnableHover] = useState(false);
 
 

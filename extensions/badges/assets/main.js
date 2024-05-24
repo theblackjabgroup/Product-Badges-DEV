@@ -159,15 +159,15 @@ function my_badge(imgNode, badgeUrl, displayPosition, isHoverEnabled) {
   var imgDiv = document.createElement('img');
   imgDiv.classList.add("img-tag");
   imgDiv.src = badgeUrl;
-  if (displayPosition == "TopLeft") imgDiv.classList.add("top-left");
-  if (displayPosition == "CenterLeft") imgDiv.classList.add("center-left");
-  if (displayPosition == "BottomLeft") imgDiv.classList.add("bottom-left");
-  if (displayPosition == "TopMiddle") imgDiv.classList.add("top-middle");
-  if (displayPosition == "CenterMiddle") imgDiv.classList.add("center-middle");
-  if (displayPosition == "BottomMiddle") imgDiv.classList.add("bottom-middle");
-  if (displayPosition == "TopRight") imgDiv.classList.add("top-right");
-  if (displayPosition == "MiddleRight") imgDiv.classList.add("middle-right");
-  if (displayPosition == "BottomRight") imgDiv.classList.add("bottom-right");
+  if (displayPosition == "top-left") imgDiv.classList.add("top-left");
+  if (displayPosition == "center-left") imgDiv.classList.add("center-left");
+  if (displayPosition == "bottom-left") imgDiv.classList.add("bottom-left");
+  if (displayPosition == "top-middle") imgDiv.classList.add("top-middle");
+  if (displayPosition == "center-middle") imgDiv.classList.add("center-middle");
+  if (displayPosition == "bottom-middle") imgDiv.classList.add("bottom-middle");
+  if (displayPosition == "top-right") imgDiv.classList.add("top-right");
+  if (displayPosition == "middle-right") imgDiv.classList.add("middle-right");
+  if (displayPosition == "bottom-right") imgDiv.classList.add("bottom-right");
   newDiv.appendChild(imgDiv);
   var parentNode;
   if (imgNode.parentNode.parentNode.parentNode) {
