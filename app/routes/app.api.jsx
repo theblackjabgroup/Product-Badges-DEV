@@ -170,12 +170,25 @@ function BadgeProductMapping(props) {
   const [isHomePageChecked, setIsHomePageChecked] = useState(false);
   const [isCartPageChecked, setIsCartPageChecked] = useState(false);
 
+  /*
   function handleHover() {
-    if (enableHover === false)
+    if (enableHover === true)
       setEnableHover(true);
     else
       setEnableHover(false);
   }
+*/
+  const handleHover = useCallback((enableHover, setEnableHover) => {
+    return() => {
+      if(enableHover)
+      {
+        setEnableHover(true)
+      } else
+      {
+        setEnableHover(false)
+      }
+    }
+  })
 
   return (
     <Page>
@@ -254,7 +267,7 @@ function BadgeProductMapping(props) {
             <Checkbox
               label="Enable Hover"
               checked={enableHover}
-              onChange={handleHover}
+              onChange={handleHover(enableHover, setEnableHover)}
             />
           </InlineStack>
           <PageActions
