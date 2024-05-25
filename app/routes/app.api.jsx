@@ -182,10 +182,10 @@ function BadgeProductMapping(props) {
     return() => {
       if(enableHover)
       {
-        setEnableHover(true)
+        setEnableHover(false)
       } else
       {
-        setEnableHover(false)
+        setEnableHover(true)
       }
     }
   })
