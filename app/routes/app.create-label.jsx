@@ -2,11 +2,11 @@ import '../styles/label.css'
 import { json } from '@remix-run/node';
 import { Modal } from '@shopify/app-bridge-react';
 import { ButtonPressIcon } from '@shopify/polaris-icons';
+import { createOrUpdateBadge } from "../app.server"
 import { useLoaderData, useSubmit } from '@remix-run/react';
 import { ANNUAL_PLAN, MONTHLY_PLAN, authenticate } from '../shopify.server';
 import React, { useState, useCallback, useEffect } from 'react';
-import { Page, InlineStack, Text, Icon, Card, Button, Checkbox, BlockStack } from '@shopify/polaris';
-import { createOrUpdateBadge } from "../app.server"
+import { Page, InlineStack, Text, Icon, Card, Button, Checkbox, BlockStack, Banner } from '@shopify/polaris';
 
 
 
@@ -152,11 +152,10 @@ export default function CreateLabelPage() {
   const [enableHover, setEnableHover] = useState(false);
   function handleHover() { setEnableHover(!enableHover) }
 
-  const [showImages, setShowImages] = useState(false);
   const imageUrls = LabelProductMapping();
   const [selectedLabelUrl, setSelectedLabelUrl] = useState('');
   const [selectedLabelName, setSelectedLabelName] = useState('')
-  const [labelStyle, setLabelStyle] = useState({});
+  const [labelStyle, setLabelStyle] = useState({ top: '0', left: '0', maxWidth: '100px' });
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handleItemClick = (index) => {
@@ -238,10 +237,6 @@ export default function CreateLabelPage() {
     handleSave()
   }
 
-  const handleSelectLabelClick = () => {
-    setShowImages(!showImages);
-  };
-
 
   async function selectProductImage() {
     const products = await window.shopify.resourcePicker({
@@ -277,11 +272,7 @@ export default function CreateLabelPage() {
     <Page title="Create Label">
       <div className='grid' style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '10px' }}>
         <div className='product-view-card'>
-          <Card>
-            <Text as="h1" variant="bodyMd">
-              Product View
-            </Text>
-          </Card>
+          <Banner title="Select Label and Product Before Saving."></Banner>
           <div style={{ marginTop: '20px' }}>
             <Card>
               {selectImageState.productImage ? (
@@ -297,6 +288,7 @@ export default function CreateLabelPage() {
                   <Button variant='primary' onClick={selectProductImage}>Select Product</Button>
                 </InlineStack>
               </div>
+              
             </Card>
           </div>
         </div>

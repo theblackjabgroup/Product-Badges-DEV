@@ -306,10 +306,6 @@ const Labels = () => {
             </Text>
             <Page>
                 <BlockStack align='space-between' gap={400}>
-                    <Banner tone='warning' title="Order archived" onDismiss={() => { }}>
-                        <p style={{ margin: "5px 5px 10px 5px" }}>To make the app work on your store, enable the App embed block on Theme Customization..</p>
-                        <Button>Activate app embed block</Button>
-                    </Banner>
                     <InlineStack align='space-between'>
                         <InlineStack gap={200}>
                             <Button onClick={() => handleEnable(selectedResources)}>Enable</Button>

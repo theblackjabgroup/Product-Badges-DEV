@@ -68,7 +68,6 @@ function handleBadgeClick() {
         <Link to="/app/labels">Labels - Sharad</Link>
         <Link to="/app/create-label">Create Label - Sharad</Link>
         <Link to="/app/create-label">Edit Label - Sharad</Link>
-        <Link to="/app/getstarted">Get Started - Sharad</Link>
 
         <Link to="/app/badges" onClick={handleBadgeClick}>Badges - nikhil</Link>
         <Link to="/app/api" onClick={handleAPIClick}>API - Nikhil</Link>

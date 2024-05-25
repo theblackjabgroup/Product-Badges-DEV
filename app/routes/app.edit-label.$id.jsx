@@ -115,7 +115,7 @@ export default function CreateLabelPage() {
   const imageUrls = LabelProductMapping();
   const [selectedLabelUrl, setSelectedLabelUrl] = useState(product.badgeUrl);
   const [selectedLabelName, setSelectedLabelName] = useState('')
-  const [labelStyle, setLabelStyle] = useState({});
+  const [labelStyle, setLabelStyle] = useState({ top: '0', left: '0', maxWidth: '100px' });
   const [activeIndex, setActiveIndex] = useState(null);
 
   const handleItemClick = (index) => {

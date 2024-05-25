@@ -84,7 +84,7 @@ export default function Index() {
             <BlockStack align='space-between' gap={800} inlineAlign='center'>
               <img alt="" width="100%" height="100%" style={{ objectFit: 'cover', objectPosition: 'center', maxHeight: '300px' }} src={step_three} />
               <Text variant='headingMd' alignment='justify'>Step 3: Publish your label.</Text>
-              <p style={{ textAlign: 'justify' }}>After customizing, make sure to save and activate the label so that it can appear on your store. If your label doesn't show up on your theme, please contact us to resolve the issue.</p>
+              <p style={{ textAlign: 'justify' }}>After customizing, make sure to save and activate the label so that it can appear on your store. If your label doesn't show up on your theme, please contact us to resolve the issue.</p>
               <Button variant='primary'>Manage Label</Button>
             </BlockStack>
           </Card>
@@ -102,7 +102,7 @@ export default function Index() {
                 <strong>Installation Guide</strong>
                 <p>Easily install Shopify Badges and Labels. Check our installation guide for more details.</p>
               </BlockStack>
-              <button style={{}} className='ReadInstallationGuideButton'>Read Installation Guide</button>
+              <a href="https://www.blackbytt.in/" target='_blank'><button style={{}} className='ReadInstallationGuideButton'>Read Installation Guide</button></a>
             </InlineStack>
           </InlineStack>
         </Card>
