@@ -46,10 +46,8 @@ export async function action({ request, params }) {
       try {
         const badge = await db.badge.findUnique({
           where: {
-            productHandle_shop: {
               productHandle: obj,
               shop: labelProductObjs.shop
-            }
           }
         });
         if (badge) {
@@ -81,10 +79,8 @@ export async function action({ request, params }) {
         try {
           const badge = await db.badge.findUnique({
             where: {
-              productHandle_shop: {
                 productHandle: obj,
                 shop: labelProductObjs.shop
-              }
             }
           });
           if (badge) {
