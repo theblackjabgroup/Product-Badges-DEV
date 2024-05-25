@@ -122,7 +122,6 @@ function BadgeProductMapping(props) {
 
   const submit = useSubmit();
   function handleSave() {
-    console.log("HANDLE HOVER IN handlesave ", formState.productHandles, enableHover)
     const data = {
       "badge_url": selectedOption.value,
       "badge_name": selectedOption.label || "",
@@ -184,11 +183,9 @@ function BadgeProductMapping(props) {
       if(enableHover)
       {
         setEnableHover(false)
-        console.log("Setting hover to false ", enableHover)
       } else
       {
         setEnableHover(true)
-        console.log("Setting hover to true ", enableHover)
       }
     }
   })

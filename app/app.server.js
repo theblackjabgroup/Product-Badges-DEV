@@ -16,7 +16,6 @@ export async function createOrUpdateBadge(arrayToIterate) {
         const prodHandle = arrayOfProd[i];
         const prodId = arrayOfProdId[i];
         const prodImgUrl = arrayOfProdImgUrl[i];
-        console.log("ENABLE HOVER ",prodHandle, obj.enableHover)
         const data = {
           id: prodId,
           productHandle: prodHandle,
@@ -26,7 +25,7 @@ export async function createOrUpdateBadge(arrayToIterate) {
           displayPosition: obj.displayPosition,
           displayPage: obj.displayPage,
           isEnabled: true,
-          isHoverEnabled: Boolean(obj.enableHover),
+          isHoverEnabled: Boolean(obj.enableHover == "true"),
           shop: obj.shop,
         };
             const badge = await db.Badge.findFirst({
