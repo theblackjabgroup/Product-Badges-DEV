@@ -16,7 +16,7 @@ export async function createOrUpdateBadge(arrayToIterate) {
         const prodHandle = arrayOfProd[i];
         const prodId = arrayOfProdId[i];
         const prodImgUrl = arrayOfProdImgUrl[i];
-  
+        console.log("ENABLE HOVER ",prodHandle, obj.enableHover)
         const data = {
           id: prodId,
           productHandle: prodHandle,
