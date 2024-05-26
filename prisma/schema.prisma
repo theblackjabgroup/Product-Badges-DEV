@@ -10,7 +10,7 @@ generator client {
 // See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
 datasource db {
   provider = "mysql"
-  url      = "mysql://${process.env.DATABASE_USER}:${process.env.DATABASE_PASSWORD}@${process.env.DATABASE_HOST}:25060/${process.env.DATABASE_NAME}?ssl-mode=REQUIRED"
+  url      = process.env.DATABASE_URL
 }
 
 model Session {
