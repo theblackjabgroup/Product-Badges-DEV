@@ -1,18 +1,23 @@
+// shopify.server.js
 import "@shopify/shopify-app-remix/adapters/node";
 import {
-  ApiVersion,
   AppDistribution,
   DeliveryMethod,
   shopifyApp,
+  LATEST_API_VERSION,
+  BillingInterval,
 } from "@shopify/shopify-app-remix/server";
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import { restResources } from "@shopify/shopify-api/rest/admin/2024-04";
 import prisma from "./db.server";
 
+export const MONTHLY_PLAN = 'Monthly Subscription';
+export const ANNUAL_PLAN = 'Annual Subscription';
+
 const shopify = shopifyApp({
   apiKey: process.env.SHOPIFY_API_KEY,
   apiSecretKey: process.env.SHOPIFY_API_SECRET || "",
-  apiVersion: ApiVersion.April24,
+  apiVersion: LATEST_API_VERSION,
   scopes: process.env.SCOPES?.split(","),
   appUrl: process.env.SHOPIFY_APP_URL || "",
   authPathPrefix: "/auth",
@@ -23,6 +28,19 @@ const shopify = shopifyApp({
     APP_UNINSTALLED: {
       deliveryMethod: DeliveryMethod.Http,
       callbackUrl: "/webhooks",
+    },
+  },
+  billing: {
+    [MONTHLY_PLAN]: {
+      amount: 10,
+      currencyCode: 'USD',
+      interval: BillingInterval.Every30Days
+      
+    },
+    [ANNUAL_PLAN]: {
+      amount: 90,
+      currencyCode: 'USD',
+      interval: BillingInterval.Annual
     },
   },
   hooks: {
@@ -42,7 +60,7 @@ const shopify = shopifyApp({
 });
 
 export default shopify;
-export const apiVersion = ApiVersion.April24;
+export const apiVersion = LATEST_API_VERSION;
 export const addDocumentResponseHeaders = shopify.addDocumentResponseHeaders;
 export const authenticate = shopify.authenticate;
 export const unauthenticated = shopify.unauthenticated;
