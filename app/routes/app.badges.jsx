@@ -312,7 +312,7 @@ const Labels = () => {
                             <Button onClick={() => handleDisable(selectedResources)}>Disable</Button>
                             <Button onClick={() => handleDelete(selectedResources)} tone='critical' variant='primary'>Delete</Button>
                         </InlineStack>
-                        <Button variant='primary' onClick={() => navigate("/app/create-label")}>Create Label</Button>
+                        <Button variant='primary' onClick={() => navigate("/app/api")}>Create Label</Button>
                     </InlineStack>
                     <LegacyCard>
                         <IndexFilters
