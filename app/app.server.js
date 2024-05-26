@@ -34,7 +34,7 @@ export async function createOrUpdateBadge(arrayToIterate) {
             if (!badge) {
               
               const displayPageArr = data.displayPage.split(",");
-              if(displayPageArr.length > 1)
+              if(displayPageArr.length > 1 && displayPageArr[0] == "All")
               {                
                 displayPageArr.shift();
               }
