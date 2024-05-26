@@ -31,15 +31,15 @@ export async function createOrUpdateBadge(arrayToIterate) {
             const badge = await db.Badge.findFirst({
               where: { id: prodId, shop: obj.shop },
             });
+                          
+            const displayPageArr = data.displayPage.split(",");
+            if(displayPageArr.length > 1 && displayPageArr[0] == "All")
+            {                
+              displayPageArr.shift();
+            }
+            data.displayPage = displayPageArr.join();
+            
             if (!badge) {
-              
-              const displayPageArr = data.displayPage.split(",");
-              if(displayPageArr.length > 1 && displayPageArr[0] == "All")
-              {                
-                displayPageArr.shift();
-              }
-              data.displayPage = displayPageArr.join();
-
               const createdMapping = await db.badge.create({ data });
               console.log(
                 "Creating new mapping of badge and product",
