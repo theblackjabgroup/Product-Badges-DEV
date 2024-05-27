@@ -4,52 +4,106 @@ import { ANNUAL_PLAN, MONTHLY_PLAN, authenticate } from '../shopify.server';
 import { useLoaderData } from '@remix-run/react';
 import { json } from '@remix-run/node';
 import { usePlan } from './app.plancontext';
+import mixpanel from 'mixpanel-browser';
+
+
+
+mixpanel.init('70551b6bed93424cd2c7eacf49a345c2', {debug: true, track_pageview: true});
+mixpanel.identify('Yash');
 
 export async function loader({ request }) {
-  const { billing } = await authenticate.admin(request);
-
+  const { billing} = await authenticate.admin(request);
+  
   try {
-    
+   
     const billingCheck = await billing.require({
       plans: [MONTHLY_PLAN, ANNUAL_PLAN],
       isTest: true,
     
       onFailure: () => {
         console.log('Shop does not have any active plans.');
-        return json({ billing, plan: { name: "Free" } });
+        return json({ billing, plan: { name: "Free" }});
       },
     });
-
+ 
+  
+  
     
     const subscription = billingCheck.appSubscriptions[0];
     console.log(`Shop is on ${subscription.name} (id ${subscription.id})`);
-    return json({ billing, plan: subscription });
+    return json({ billing, plan: subscription});
 
   } catch (error) {
     
     console.error('Error fetching plan:', error);
-    return json({ billing, plan: { name: "Free" } });
+    return json({ billing, plan: { name: "Free" }});
   }
 }
 
 
 
+
 export default function PaymentsPage() {
-  const { plan } = useLoaderData(); // Load the plan data
-  
+  const { plan} = useLoaderData(); // Load the plan data
+ 
   const [plan_item, setPlan] = useState('monthly');
   const [paidPrice, setPaidPrice] = useState(10);
   const [modalActive, setModalActive] = useState(false);
+  
   // Determine if the user is on a paid plan
   // const isOnPaidPlan = plan.name !== 'Free';
   const { isOnPaidPlan, setIsOnPaidPlan } = usePlan();
+  
   useEffect(() => {
-    setIsOnPaidPlan(plan.name !== 'Free'); // Update the context state
+    setIsOnPaidPlan(plan.name !== 'Free'); 
+   // Update the context state
+  
   }, [plan, setIsOnPaidPlan]);
+
+ 
+
+  useEffect(() => {
+    // Function to fetch and log the POS user details
+    const fetchPOSUser = async () => {
+      try {
+        const posUser = await shopify.user(); 
+        console.log('POS User Details:', posUser);
+      } catch (error) {
+        console.error('Error fetching POS user details:', error);
+      }
+    };
+
+    fetchPOSUser();
+  }, []);
+
+  useEffect(() => {
+    // Check for the upgrade_initiated query parameter and log the message
+    const url = new URL(window.location.href);
+    const upgradeInitiated = url.searchParams.get('upgrade_initiated');
+
+    if (upgradeInitiated && plan.name === 'Monthly Subscription') {
+     mixpanel.track('Monthly Plan User')
+
+      // Remove the upgrade_initiated query parameter from the URL
+      url.searchParams.delete('upgrade_initiated');
+      window.history.replaceState({}, document.title, url.toString());
+    }
+    else if (upgradeInitiated && plan.name === 'Annual Subscription') {
+      mixpanel.track('Annual Plan User')
+ 
+       // Remove the upgrade_initiated query parameter from the URL
+       url.searchParams.delete('upgrade_initiated');
+       window.history.replaceState({}, document.title, url.toString());
+     }
+
+  }, []);
+
   const upgradeButtonUrl = `/app/upgrade?plan_item=${plan_item}`;
   const cancelButtonUrl = `/app/cancel?plan_item=${plan_item}`;
 
   const [activeButtonIndex, setActiveButtonIndex] = useState(0);
+  var cancelButtonCount =0;
+  var upgradeButtonCount=0;
 
   const handlePlanChange = (selected) => {
     setPlan(selected);
@@ -69,9 +123,29 @@ export default function PaymentsPage() {
 
 const handleCancelAndRedirect = () => {
   setModalActive(false);
-  
+  cancelButtonCount= cancelButtonCount + 1;
+  mixpanel.track("Cancel button is clicked", {
+    'name': "varun2",
+    'CancelClickCount': cancelButtonCount
+  });
 };
   
+
+
+
+const handlePlanUpgrade = useCallback(() => {
+  upgradeButtonCount= upgradeButtonCount + 1;
+  mixpanel.track("Upgrade button is clicked", {
+    'name': "varun2",
+    'UpgradeClickCount': upgradeButtonCount
+  });
+  
+ }, [upgradeButtonCount]);
+
+
+
+
+
   return (
     <Page title="Pricing Plans">
       {modalActive && (
@@ -160,7 +234,7 @@ const handleCancelAndRedirect = () => {
                 
                 
                 <div style={{ textAlign: 'center', marginTop: '90px' }}>
-                  <Button tone='success'  url={isOnPaidPlan ? cancelButtonUrl : '/app/payments'} variant='primary' size='large'>Join for free</Button>
+                  <Button tone='success' disabled={!isOnPaidPlan}  url={isOnPaidPlan ? cancelButtonUrl : '/app/payments'} variant='primary' size='large'>Switch to free</Button>
                 </div>
               </div>
               <div style={{position:'relative',padding: '20px', border: isOnPaidPlan ? '1px solid #0269E3' : '1px', borderRadius: '22px', marginLeft: '60px', height: '450px', width: '320px',boxShadow:'2px 2px 2px 2px grey'}}>
@@ -194,7 +268,7 @@ const handleCancelAndRedirect = () => {
     
                
                 <div style={{ textAlign: 'center', marginTop: '55px' }}>
-                  <Button tone='success' disabled={isOnPaidPlan} url={upgradeButtonUrl} variant='primary' size='large'>Upgrade to Pro</Button>
+                  <Button tone='success' disabled={isOnPaidPlan} url={upgradeButtonUrl} variant='primary' size='large' onClick={() => { handlePlanUpgrade()}}>Upgrade to Pro</Button>
                 </div>
               </div>
               <div style={{top:'-12px', right:'-24px', position:'absolute'}}><img src='/images/3.png' height='90px' width='135px' style={{ opacity: activeButtonIndex ? 1 : 0 }}  />

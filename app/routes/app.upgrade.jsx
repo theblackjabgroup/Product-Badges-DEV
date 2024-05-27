@@ -1,22 +1,3 @@
-// import { authenticate, MONTHLY_PLAN, ANNUAL_PLAN } from "../shopify.server";
-// export async function loader({ request }) {
-//   const { billing, session } = await authenticate.admin(request);
-//   let { shop } = session;
-//   const { plan_item } = new URLSearchParams(request.url.search);
-//   console.log("the plan is :", plan_item);
-// let myShop = shop.replace(".myshopify.com", "");
-// await billing.require({
-//   plans: [MONTHLY_PLAN, ANNUAL_PLAN],
-// onFailure: async () => billing.request({
-//   plan: plan_item === 'monthly' ? MONTHLY_PLAN : ANNUAL_PLAN,
-//   isTest: true,
-//  returnUrl: `https://admin.shopify.com/store/${myShop}/apps/${process.env.APP_NAME}/app/payments`,
-//  }),
-//  });
-
-//  return null; }
-
-
 import { authenticate, MONTHLY_PLAN, ANNUAL_PLAN } from "../shopify.server";
 
 export async function loader({ request }) {
@@ -34,7 +15,7 @@ export async function loader({ request }) {
     onFailure: async () => billing.request({
       plan: plan,
       isTest: true,
-      returnUrl: `https://admin.shopify.com/store/${myShop}/apps/${process.env.APP_NAME}/app/payments`,
+      returnUrl: `https://admin.shopify.com/store/${myShop}/apps/${process.env.APP_NAME}/app/payments?upgrade_initiated=true`,
     }),
   });
 

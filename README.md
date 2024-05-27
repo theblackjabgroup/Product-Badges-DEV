@@ -1,3 +1,40 @@
+Deploy to DO
+
+Deployment steps:
+create a app in digitalOcean and connect your github repo
+Do not configure environment variables for the first time
+Once the deployment gets successful then configure environment variables
+SHOPIFY_API_KEY, SHOPIFY_API_SECRET, SCOPES, SHOPIFY_APP_URL
+Once the deployment gets successful you will get a app URL from digitalocean put that URL against SHOPIFY_APP_URL
+And update the app URL in partners dashboard also
+Then do npm run deploy if extension is not working on shopify site
+and again start the digital ocean pipeline
+
+Apart from this for database, we need to configure our db on digitalOcean and for that we need purchase some database from digitalOcean
+
+Set the DB
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://doadmin:AVNS_VpHEDJ0P-NR0VpaKbgW@db-mysql-blr1-56602-do-user-16072878-0.c.db.ondigitalocean.com:25060/defaultdb?ssl-mode=REQUIRED"
+}
+
+url comes from dig ocean -? db -> connectiond etails -> top right drop down -> connection string
+
+curl -4 ifconfig.me  -- get ip
+
+allow ip in digital ocean
+
+SELECT * FROM Badge;
+
+n sql workbench get settings from connection details of DB
+
+
+
+
+
+
+---------------------------------------------------
 How to deploy app to digital ocean and test
 
 You have to delete previous migration folder and dev.sqlite file then 
@@ -33,6 +70,8 @@ create a file in /app/routes named as app.cancel.jsx
 Inside main.JS ?
 
 DOMContentLoaded -> bdgs_finditems -> identifyProductfromReq -> decodeJson + add badge -> my_badge
+
+
 
 --------------------------------------------------------------
 

@@ -4,6 +4,7 @@ import { boundary } from "@shopify/shopify-app-remix/server";
 import { AppProvider } from "@shopify/shopify-app-remix/react";
 import polarisStyles from "@shopify/polaris/build/esm/styles.css?url";
 import { authenticate } from "../shopify.server";
+import { PlanProvider } from "./app.plancontext"; // Import the PlanProvider
 
 
 
@@ -58,6 +59,7 @@ function handleBadgeClick() {
 
   return (
     <AppProvider isEmbeddedApp apiKey={apiKey}>
+      <PlanProvider>
       <ui-nav-menu>
         <Link to="/app" rel="home">
           Home
@@ -73,6 +75,7 @@ function handleBadgeClick() {
         <Link to="/app/api" onClick={handleAPIClick}>API - Nikhil</Link>
       </ui-nav-menu>
       <Outlet />
+      </PlanProvider>
     </AppProvider>
   );
 }
