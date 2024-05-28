@@ -5,6 +5,9 @@ create a app in digitalOcean and connect your github repo
 Do not configure environment variables for the first time
 Once the deployment gets successful then configure environment variables
 SHOPIFY_API_KEY, SHOPIFY_API_SECRET, SCOPES, SHOPIFY_APP_URL
+
+for first time deployment keep host blank and give any url for shopify app url and keep secret key etc
+
 Once the deployment gets successful you will get a app URL from digitalocean put that URL against SHOPIFY_APP_URL
 And update the app URL in partners dashboard also
 Then do npm run deploy if extension is not working on shopify site

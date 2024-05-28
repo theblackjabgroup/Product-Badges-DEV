@@ -8,7 +8,7 @@ async function decodeJson() {
   try {
     // Make an HTTP GET request to the server-side endpoint
     console.log("before")
-    const response = await fetch('https://myth-experiencing-von-appeared.trycloudflare.com/app/mapping');
+    const response = await fetch('https://clownfish-app-2filb.ondigitalocean.app/app/mapping');
     console.log("after")
     if (!response.ok) {
       throw new Error('Network response was not ok');
