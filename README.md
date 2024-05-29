@@ -19,8 +19,10 @@ Set the DB
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://doadmin:AVNS_VpHEDJ0P-NR0VpaKbgW@db-mysql-blr1-56602-do-user-16072878-0.c.db.ondigitalocean.com:25060/defaultdb?ssl-mode=REQUIRED"
+  url      = "mysql://doadmin:show-password@poc-shopify-db-varun-do-user-8506100-0.c.db.ondigitalocean.com:25060/defaultdb?ssl-mode=REQUIRED"
 }
+
+To create DB, go to digital ocean and create mysql db
 
 url comes from dig ocean -? db -> connectiond etails -> top right drop down -> connection string
 
