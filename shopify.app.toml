@@ -3,7 +3,7 @@
 client_id = "6ebe72d197ff326ab086f7baec2c1a7a"
 name = "lean-capital-app"
 handle = "lean-capital-app-4"
-application_url = "https://c9e3c6f5b82384c2bab634463a8b3d40.serveo.net"
+application_url = "https://lionfish-app-hrorj.ondigitalocean.app/"
 embedded = true
 
 [build]
@@ -17,9 +17,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://c9e3c6f5b82384c2bab634463a8b3d40.serveo.net/auth/callback",
-  "https://c9e3c6f5b82384c2bab634463a8b3d40.serveo.net/auth/shopify/callback",
-  "https://c9e3c6f5b82384c2bab634463a8b3d40.serveo.net/api/auth/callback"
+  "https://lionfish-app-hrorj.ondigitalocean.app/auth/callback",
+  "https://lionfish-app-hrorj.ondigitalocean.app/auth/shopify/callback",
+  "https://lionfish-app-hrorj.ondigitalocean.app/api/auth/callback"
 ]
 
 [webhooks]

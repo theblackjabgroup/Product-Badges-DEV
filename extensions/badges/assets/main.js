@@ -26,7 +26,6 @@ async function decodeJson() {
 function addBadge(productDOM, badgeUrl, displayPosition, isHoverEnabled, currentPage) {
   for (var idx = 0; idx < productDOM.length; idx++) {
     if (productDOM[idx]) {
-      const imgTag = productDOM[idx].querySelectorAll('img');
       console.log('productDOM[idx] ', productDOM[idx]);
       my_badge(productDOM[idx], badgeUrl, displayPosition, isHoverEnabled, currentPage);
     }
@@ -57,13 +56,13 @@ function findCurrentPage() {
   if (currentPageUrl.urlWithoutParams.endsWith('/')) {
     currentPage = "Home"
   }
-  else if (currentPageUrl.urlWithoutParams.includes('/collections/')) {
+  else if (location.href.indexOf("collection") != -1|| location.href.indexOf("collections") != -1) {
     currentPage = "Collection"
-  } else if (currentPageUrl.urlWithoutParams.includes('/products/')) {
+  } else if (location.href.indexOf("products") != -1) {
     currentPage = "Product"
-  } else if (currentPageUrl.urlWithoutParams.includes('/cart/')) {
+  } else if (location.href.indexOf("cart") != -1) {
     currentPage = "Cart"
-  } else if (currentPageUrl.urlWithoutParams.includes('/search/')) {
+  } else if (location.href.indexOf("search") != -1) {
     currentPage = "Search"
   } else {
     currentPage = "All"
@@ -79,7 +78,9 @@ function identifyProductfromReq() {
   decodeJson().then(edges => {
     for (let index = 0; index < edges.length; index++) {
       const displayPageArr = edges[index].displayPage.split(",");
+      console.log("currentpage ",currentPage)
       for (let d = 0; d < displayPageArr.length; d++) {
+        console.log()
         if ((displayPageArr[d] == currentPage || displayPageArr[d] == "All") && edges[index].isEnabled == true && domMAP.has(edges[index].productHandle)) {
           console.log(
             'key ',
@@ -169,7 +170,7 @@ async function bdgs_finditems() {
   const segments = parsedUrl.pathname.split('/');
   const productNameInProductPage = segments.filter(segment => segment).pop();
 
-  if (location.href.indexOf("products"));
+  if (location.href.indexOf("products") != -1 );
   {
     var imgTags = document.querySelectorAll('img[src*="/products/"]:not([class*="not-abel"]), img[data-src*="/products/"]:not([class*="not-label"]), img[src*="/no-image"], img[data-src*="/no-image"], img[src*="/products/"], img[srcset*="/products/"][srcset*="/cdn.shopify.com/s/files/"], img[src*="/cdn.shopify.com/s/files/"], source[data-srcset*="/products/"],  source[data-srcset*="/cdn.shopify.com/s/files/"], source[data-srcset*="/cdn/shop/files/"],  img[data-srcset*="/cdn.shopify.com/s/files/"],  img[src*="/product_img/"],  img[src*="/cdn/shop/files/"],  img[srcset*="/cdn/shop/files/"], img[srcset*="/cdn/shop/products/"], [style*="/products/"], img[src*="%2Fproducts%2F"]');
     const widestImgTag = imgTags[0];
@@ -240,7 +241,7 @@ function my_badge(imgNode, badgeUrl, displayPosition, isHoverEnabled, currentPag
     parentNode.appendChild(newDiv);
   }
   if (isHoverEnabled) {
-    nodeToAddHover.classList.add("tag-hover")
+    nodeToAddHover.classList.add("tag-hover") 
     if (nodeToAddHover.parentNode.classList.contains('card--media')) {
       nodeToAddHover.parentNode.classList.add("tag-hover")
     }
