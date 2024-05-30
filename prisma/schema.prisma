@@ -10,7 +10,7 @@ generator client {
 // See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
 datasource db {
   provider = "mysql"
-  url      = "mysql://doadmin:AVNS_GaS0l13ShcBFiih0cgi@poc-shopify-db-varun-do-user-8506100-0.c.db.ondigitalocean.com:25060/defaultdb?ssl-mode=REQUIRED"
+  url      = env("DATABASE_URL")
 }
 
 

@@ -25,7 +25,10 @@ datasource db {
 To create DB, go to digital ocean and create mysql db
 
 before you deploy to digital ocean, delete migration folder and dev sql lite
-and run npx prisma migrate dev --name init
+
+and run
+npx prisma migrate deploy
+ npx prisma migrate dev --name init
 
 url comes from dig ocean -? db -> connectiond etails -> top right drop down -> connection string
 
