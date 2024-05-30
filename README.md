@@ -26,7 +26,10 @@ To create DB, go to digital ocean and create mysql db
 
 url comes from dig ocean -? db -> connectiond etails -> top right drop down -> connection string
 
-curl -4 ifconfig.me  -- get ip
+curl -4 ifconfig.me 
+
+
+ -- in order to get ip
 
 allow ip in digital ocean
 
