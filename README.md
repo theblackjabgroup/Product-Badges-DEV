@@ -24,11 +24,13 @@ datasource db {
 
 To create DB, go to digital ocean and create mysql db
 
+before you deploy to digital ocean, delete migration folder and dev sql lite
+
 url comes from dig ocean -? db -> connectiond etails -> top right drop down -> connection string
 
 curl -4 ifconfig.me 
 
-
+to connect frm local terminal to go db in DO and drop down to flags
  -- in order to get ip
 
 allow ip in digital ocean
@@ -38,7 +40,12 @@ SELECT * FROM Badge;
 n sql workbench get settings from connection details of DB
 
 
+--------------------------------------------------
 
+shopiufy.app.toml regenerates urls on npm run dev, once testing in digital ocean, you can manually update so that partner account doesnt need to update for npm run deploy, partenr account will stay with what you put in toml
+
+npm run deploy does not update toml file
+only npm run dev updates toml file
 
 
 
