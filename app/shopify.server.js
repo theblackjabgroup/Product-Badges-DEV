@@ -10,6 +10,7 @@ import {
 import { PrismaSessionStorage } from "@shopify/shopify-app-session-storage-prisma";
 import { restResources } from "@shopify/shopify-api/rest/admin/2024-04";
 import prisma from "./db.server";
+import { BillingReplacementBehavior } from "@shopify/shopify-api";
 
 export const MONTHLY_PLAN = 'Monthly Subscription';
 export const ANNUAL_PLAN = 'Annual Subscription';
@@ -34,13 +35,15 @@ const shopify = shopifyApp({
     [MONTHLY_PLAN]: {
       amount: 10,
       currencyCode: 'USD',
-      interval: BillingInterval.Every30Days
+      interval: BillingInterval.Every30Days,
+      replacementBehavior: BillingReplacementBehavior.ApplyImmediately
       
     },
     [ANNUAL_PLAN]: {
       amount: 90,
       currencyCode: 'USD',
-      interval: BillingInterval.Annual
+      interval: BillingInterval.Annual,
+      replacementBehavior: BillingReplacementBehavior.ApplyImmediately
     },
   },
   hooks: {
