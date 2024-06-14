@@ -13,7 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model Session {
   id          String    @id
   shop        String
@@ -31,7 +30,7 @@ model Badge {
   badgeName        String      
   badgeUrl         String 
   displayPosition  String
-  displayPage      String?
+  displayPage      String 
   isEnabled        Boolean
   isHoverEnabled   Boolean
   shop             String
