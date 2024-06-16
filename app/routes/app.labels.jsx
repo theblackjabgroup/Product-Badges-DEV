@@ -5,7 +5,7 @@ import { authenticate } from "../shopify.server";
 import React, { useState } from 'react';
 import { useLoaderData, useNavigate, useSubmit } from "@remix-run/react"
 import { EditIcon, DeleteIcon, ViewIcon, HideIcon } from '@shopify/polaris-icons';
-import { Page, Banner, Button, BlockStack, InlineStack, IndexTable, IndexFilters, useSetIndexFiltersMode, useIndexResourceState, Text, LegacyCard, Icon, Badge, Thumbnail, } from '@shopify/polaris'
+import { Page, Button, BlockStack, InlineStack, IndexTable, useSetIndexFiltersMode, useIndexResourceState, Text, LegacyCard, Icon, Badge, Thumbnail, } from '@shopify/polaris'
 
 
 export async function loader({ request, params }) {
@@ -287,7 +287,7 @@ const Labels = () => {
                     />
                 </IndexTable.Cell>
                 <IndexTable.Cell><Badge tone={isEnabled ? 'success' : 'attention'}> {isEnabled ? <InlineStack gap={100} blockAlign='center'><Icon source={ViewIcon} tone="base" />{isEnabled ? "Enabled" : "Disabled"}</InlineStack> : <InlineStack gap={100} blockAlign='center'><Icon source={HideIcon} tone="base" />{isEnabled ? "Enabled" : "Disabled"}</InlineStack>}</Badge></IndexTable.Cell>
-                <IndexTable.Cell>
+                <IndexTable.Cell >
                     <InlineStack gap={400}>
                         <Button variant='plain' onClick={() => navigate(`/app/edit-label/${id}`)}><Icon source={EditIcon} tone="base" /></Button>
                         <Button onClick={() => handleDelete(id)} variant='plain'><Icon source={DeleteIcon} tone="base" /></Button>
@@ -301,10 +301,11 @@ const Labels = () => {
 
     return (
         <>
-            <Text variant="heading2xl" as="h3">
-                Online store dashboard
-            </Text>
             <Page>
+            <Text variant="heading2xl" as="h3">
+                Labels
+            </Text>
+            <hr style={{border:"none"}}/>
                 <BlockStack align='space-between' gap={400}>
                     <InlineStack align='space-between'>
                         <InlineStack gap={200}>
@@ -315,22 +316,6 @@ const Labels = () => {
                         <Button variant='primary' onClick={() => navigate("/app/create-label")}>Create Label</Button>
                     </InlineStack>
                     <LegacyCard>
-                        <IndexFilters
-                            mode={mode}
-                            setMode={setMode}
-                            loading={loading}
-                            tabs={tabs}
-                            primaryAction={primaryAction}
-                            onCreateNewView={onCreateNewView}
-                            selected={selected}
-                            onSelect={setSelected}
-                            canCreateNewView
-                            cancelAction={{
-                                onAction: onHandleCancel,
-                                disabled: false,
-                                loading: false,
-                            }}
-                        />
                         <IndexTable
                             sortable={["Name"]}
                             resourceName={resourceName}

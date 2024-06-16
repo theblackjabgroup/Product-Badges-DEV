@@ -98,7 +98,7 @@
 .slider {
   position: absolute;
   inset: 0;
-  background-color: #B4D6FE;
+  background-color: var(--p-color-bg-fill-info);
   transition: .4s;
   border-radius: 5px;
   border: none;
@@ -115,7 +115,7 @@
   border-radius: 5px;
   left: 0;
   top: 0;
-  background-color: #0269E3;
+  background-color: var(--p-color-bg-fill-info-active);
   color: white;
   border: none;
   transition: .4s;
@@ -127,17 +127,4 @@ input:checked+.slider:before {
   left: 100%;
   transform: translateX(-100%);
   content: "Yes";
-}
-
-.ReadInstallationGuideButton {
-  background: noen;
-  border: 1px solid #c4cdd5;
-  text-wrap: nowrap;
-  height: fit-content;
-  padding: 0.35rem 1rem;
-  background: white;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: 0.1s ease;
-  font-weight: 600;
 }

@@ -1,61 +1,37 @@
 import '../styles/label.css'
 import { json } from '@remix-run/node';
-import { Modal } from '@shopify/app-bridge-react';
-import { ButtonPressIcon } from '@shopify/polaris-icons';
+import { Modal, TitleBar } from '@shopify/app-bridge-react';
+import { ButtonPressIcon, LockFilledIcon } from '@shopify/polaris-icons';
 import { createOrUpdateBadge } from "../app.server"
 import { useLoaderData, useSubmit } from '@remix-run/react';
 import { ANNUAL_PLAN, MONTHLY_PLAN, authenticate } from '../shopify.server';
 import React, { useState, useCallback, useEffect } from 'react';
 import { Page, InlineStack, Text, Icon, Card, Button, Checkbox, BlockStack, Banner } from '@shopify/polaris';
-
+import { usePlan } from './app.plancontext';
 
 
 export async function loader({ request }) {
   const { billing } = await authenticate.admin(request);
-  let plan = { name: "Free" };
-
-  // Check if the shop has an active payment for any plan
   try {
-    const billingCheck = await billing.require({
+    const { hasActivePayment } = await billing.check({
       plans: [MONTHLY_PLAN, ANNUAL_PLAN],
       isTest: true,
-      onFailure: () => {
-        console.log('Shop does not have any active plans.');
-        return json({ billing });
-      },
     });
-
-    const subscription = billingCheck.appSubscriptions[0];
-    console.log(`Shop is on ${subscription.name} (id ${subscription.id})`);
-    plan = subscription;
+    return json({ billing, hasActivePayment });
   } catch (error) {
     console.error('Error fetching plan:', error);
+    return json({ billing });
   }
-
-  // Return both imageUrl and plan in the JSON response
-  return json({ plan });
 }
-
 
 
 
 function LabelProductMapping() {
 
-  const { plan } = useLoaderData();
-  const isOnPaidPlan = plan.name !== 'Free';
-
   const [imageUrls, setImageUrls] = useState([]);
 
-  const [cdnUrl, setCdnurl] = useState(null)
-
   useEffect(() => {
-
-    if (!isOnPaidPlan) {
-      setCdnurl('https://blackbyttpaidbadges.blr1.digitaloceanspaces.com')
-    } else {
-      setCdnurl('https://blackbyttcdn.blr1.digitaloceanspaces.com')
-    }
-
+    const cdnUrl = 'https://blackbyttcdn.blr1.digitaloceanspaces.com'
     async function fetchData() {
       try {
         const response = await fetch(cdnUrl);
@@ -65,7 +41,6 @@ function LabelProductMapping() {
         const xmlData = await response.text();
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(xmlData, "text/xml");
-
         const results = Array.from(xmlDoc.querySelectorAll("Contents")).map(content => {
           const keyText = content.querySelector("Key").textContent;
           return {
@@ -78,16 +53,13 @@ function LabelProductMapping() {
         console.error('Error fetching and parsing XML:', error);
       }
     }
-
     fetchData();
-  }, [isOnPaidPlan, cdnUrl]);
-
+  }, []);
   return imageUrls;
 }
 
 
 export async function action({ request }) {
-
   const { session } = await authenticate.admin(request);
   const { shop } = session;
   try {
@@ -95,7 +67,6 @@ export async function action({ request }) {
       ...Object.fromEntries(await request.formData()),
       shop,
     };
-
     console.log("object ", labelProductObjs)
     const arrayToIterate = [labelProductObjs];
     const result = createOrUpdateBadge(arrayToIterate);
@@ -109,22 +80,58 @@ export async function action({ request }) {
 
 export default function CreateLabelPage() {
 
-  const { plan } = useLoaderData();
+  const { hasActivePayment } = useLoaderData();
 
-  const isOnPaidPlan = plan.name !== 'Free';
+  const { isOnPaidPlan, setIsOnPaidPlan } = usePlan();
+
   console.log(isOnPaidPlan)
 
-  const [selectImageState, setSelectImageState] = useState(plan)
+  useEffect(() => {
+    setIsOnPaidPlan(hasActivePayment);
+    // Update the context state
+
+  }, [hasActivePayment, setIsOnPaidPlan]);
+
+
+
+  // Fetch Paid Badges
+  const [paidImageUrl, setPaidImageUrl] = useState([])
+  useEffect(() => {
+    const paidBadgesUrl = 'https://blackbyttpaidbadges.blr1.digitaloceanspaces.com'
+    async function fetchPaidBadges() {
+      try {
+        const response = await fetch(paidBadgesUrl);
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const xmlData = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlData, "text/xml");
+        const results = Array.from(xmlDoc.querySelectorAll("Contents")).map(content => {
+          const keyText = content.querySelector("Key").textContent;
+          return {
+            label: keyText,
+            value: `${paidBadgesUrl}/${keyText}`
+          };
+        });
+        setPaidImageUrl(results);
+      } catch (error) {
+        console.error('Error fetching and parsing XML:', error);
+      }
+    }
+    fetchPaidBadges();
+  }, [])
+
+  const [selectImageState, setSelectImageState] = useState(isOnPaidPlan)
 
   // Checkboxes
   const [selectedDisplayPage, setSelectedDisplayPage] = useState(["All"]);
-  const [isProductPageChecked, setIsProductPageChecked] = useState(false);
-  const [isCollectionPageChecked, setIsCollectionPageChecked] = useState(false);
-  const [isSearchResultPageChecked, setIsSearchResultPageChecked] = useState(false);
-  const [isOtherPageChecked, setIsOtherPageChecked] = useState(false);
-  const [isHomePageChecked, setIsHomePageChecked] = useState(false);
-  const [isCartPageChecked, setIsCartPageChecked] = useState(false);
-
+  const [isProductPageChecked, setIsProductPageChecked] = useState(true);
+  const [isCollectionPageChecked, setIsCollectionPageChecked] = useState(true);
+  const [isSearchResultPageChecked, setIsSearchResultPageChecked] = useState(true);
+  const [isOtherPageChecked, setIsOtherPageChecked] = useState(true);
+  const [isHomePageChecked, setIsHomePageChecked] = useState(true);
+  const [isCartPageChecked, setIsCartPageChecked] = useState(true);
 
   const addPage = useCallback((page) => {
     setSelectedDisplayPage((prevPages) => [...prevPages, page]);
@@ -133,7 +140,6 @@ export default function CreateLabelPage() {
   const removePage = useCallback((page) => {
     setSelectedDisplayPage((prevPages) => prevPages.filter(p => p !== page));
   }, []);
-
 
   // Handlers for each checkbox
   const handleDisplayPageChange = useCallback((page, isChecked, setIsChecked) => {
@@ -146,7 +152,6 @@ export default function CreateLabelPage() {
       }
     };
   }, [addPage, removePage]);
-
 
   // Hover
   const [enableHover, setEnableHover] = useState(false);
@@ -202,6 +207,7 @@ export default function CreateLabelPage() {
         break;
     }
   }
+
   const handleLabelChange = (labelUrl) => {
     const selectedLabel = imageUrls.find(image => image.value === labelUrl);
     if (selectedLabel) {
@@ -209,6 +215,18 @@ export default function CreateLabelPage() {
       setSelectedLabelName(selectedLabel.label);
     }
   };
+
+  const handleLabelChangeForPaidPlans = (labelUrl) => {
+    const selectedLabel = paidImageUrl.find(image => image.value === labelUrl);
+    if (isOnPaidPlan) {
+      console.log("Badge Clicked: ", isOnPaidPlan)
+      if (selectedLabel) {
+        console.log("Badge Selected: ", isOnPaidPlan)
+        setSelectedLabelUrl(selectedLabel.value);
+        setSelectedLabelName(selectedLabel.label);
+      }
+    }
+  }
 
   const submit = useSubmit();
 
@@ -225,18 +243,23 @@ export default function CreateLabelPage() {
         "enableHover": enableHover,
       };
       submit(data, { method: "post" })
-      console.log(data)
-      shopify.toast.show("Saved")
+      setTopBannerStatus('success')
+      const timer = setTimeout(() => {
+        setTopBannerStatus('info');
+      }, 5000);
+      return () => clearTimeout(timer);
     } else {
-      shopify.toast.show("Error: Please select product and label before saving")
+      setTopBannerStatus('critical')
+      const timer = setTimeout(() => {
+        setTopBannerStatus('info');
+      }, 5000);
+      return () => clearTimeout(timer);
     }
   }
-
 
   const handleSubmit = () => {
     handleSave()
   }
-
 
   async function selectProductImage() {
     const products = await window.shopify.resourcePicker({
@@ -265,39 +288,42 @@ export default function CreateLabelPage() {
     }
   }
 
-
-
+  const [topBannerStatus, setTopBannerStatus] = useState('info')
 
   return (
     <Page title="Create Label">
       <div className='grid' style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '10px' }}>
         <div className='product-view-card'>
-          <Banner title="Select Label and Product Before Saving."></Banner>
-          <div style={{ marginTop: '20px' }}>
-            <Card>
-              {selectImageState.productImage ? (
-                <div style={{ position: 'relative', width: 'fit-content', height: 'fit-content', margin: '0 auto', padding: '0' }}>
-                  <img src={selectImageState.productImage} alt={selectImageState.productTitle} style={{ background: "rgba(0,0,0,0.5)", height: '350px', objectFit: "contain", objectPosition: 'center' }} />
-                  {selectedLabelUrl && (
-                    <img src={selectedLabelUrl} alt="Selected Label" style={{ position: 'absolute', ...labelStyle, maxWidth: '100px' }} />
-                  )}
-                </div>
-              ) : <img src='https://dummyimage.com/400x400/f2f2f2/b0b0b0.jpg&text=select+product' alt='select-product' style={{ width: '100%', maxHeight: '400px', margin: '0 auto', objectFit: "contain", objectPosition: 'center' }} />}
-              <div style={{ margin: '1rem auto' }}>
-                <InlineStack align='center'>
-                  <Button variant='primary' onClick={selectProductImage}>Select Product</Button>
-                </InlineStack>
+          <Banner
+            title="Select Label and Product Before Saving."
+            tone={topBannerStatus}>
+            {selectImageState.productImage ? (
+              <div style={{ position: 'relative', width: 'fit-content', height: 'fit-content', margin: '0 auto', padding: '0' }}>
+                <img src={selectImageState.productImage} alt={selectImageState.productTitle} style={{ background: "rgba(0,0,0,0.5)", height: '450px', objectFit: "contain", objectPosition: 'center', boxShadow: 'var(--p-shadow-200)', borderRadius: 'var(--p-border-radius-300)', border: 'var(--p-border-width-0165) solid var(--p-color-border)' }} />
+                {selectedLabelUrl && (
+                  <img src={selectedLabelUrl} alt="Selected Label" style={{ position: 'absolute', ...labelStyle, maxWidth: '100px' }} />
+                )}
               </div>
-              
-            </Card>
-          </div>
+            ) :
+              <div style={{ background: '#f0f0f0', height: '400px', width: '400px', margin: '0 auto', borderRadius: '9px', boxShadow: 'var(--p-shadow-0)' }}>
+                <p style={{ fontSize: '2.5rem', display: "flex", alignItems: 'center', justifyContent: 'center', height: '100%', color: '#c0c0c0' }}>
+                  Select Product
+                </p>
+              </div>
+            }
+            <div style={{ margin: '1rem auto' }}>
+              <InlineStack align='center'>
+                <Button variant='primary' onClick={selectProductImage}>Select Product</Button>
+              </InlineStack>
+            </div>
+          </Banner>
         </div>
         <div>
           <Card>
             <BlockStack gap={400}>
-              <Text as="h1" variant="bodyMd">
+              {/* <Text as="h1" variant="bodyMd">
                 Select and Optimize Label
-              </Text>
+              </Text> */}
 
               <Button variant='primary' fullWidth onClick={() => shopify.modal.show('my-modal')}>
                 <InlineStack align='center' blockAlign='center' gap={200}>
@@ -311,7 +337,7 @@ export default function CreateLabelPage() {
                   {Array.from({ length: 9 }, (_, index) => (
                     <div
                       key={index}
-                      style={{ border: `1px solid ${activeIndex === index ? '#0269E3' : '#b0b0b0'}`, width: '100%', height: '60px', borderRadius: '0.25rem', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', cursor: 'pointer', backgroundColor: `${activeIndex === index ? '#0269E3' : 'white'}`, color: `${activeIndex === index ? '#fff' : 'black'}` }}
+                      style={{ border: `1px solid ${activeIndex === index ? 'var(--p-color-bg-fill-info-active)' : '#b0b0b0'}`, width: '100%', height: '60px', borderRadius: '0.25rem', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', cursor: 'pointer', backgroundColor: `${activeIndex === index ? 'var(--p-color-bg-fill-info-active)' : 'white'}`, color: `${activeIndex === index ? '#fff' : 'var(--p-color-bg-fill-inverse-active)'}` }}
                       onClick={() => handleItemClick(index)}
                     >
                       {/* <div className="grid-item-inner"></div> */}
@@ -326,7 +352,7 @@ export default function CreateLabelPage() {
 
               <InlineStack gap={400} blockAlign='center'>
                 <p>Hover Effect</p>
-                <label className="hoverSwitchContainer">
+                <label className="hoverSwitchContainer" style={{ cursor: 'pointer' }}>
                   <input type="checkbox" checked={enableHover} onChange={handleHover} />
                   <span className="slider"></span>
                 </label>
@@ -373,16 +399,67 @@ export default function CreateLabelPage() {
       </div >
 
       <Modal id="my-modal">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', padding: '10px' }}>
-          {imageUrls.map((image, index) => (
-            <button
-              key={index}
-              onClick={() => { handleLabelChange(image.value); shopify.modal.hide('my-modal') }}
-              style={{ background: 'none', border: 'none', padding: '0', cursor: 'pointer' }}
-            >
-              <img src={image.value} alt={image.label} style={{ maxWidth: '100%', maxHeight: '60px', margin: '5px' }} />
-            </button>
-          ))}
+
+        {/* <div style={{ display: 'flex', justifyContent: 'space-around', background: 'var(--p-color-bg-fill-info)', margin: '0.5rem 1rem', borderRadius: 'var(--p-border-radius-100)', }}>
+          <button style={{ background: `${(view === 'Free') ? 'var(--p-color-bg-fill-info-active)' : 'none'}`, border: 'none', borderRadius: 'var(--p-border-radius-100)', padding: '0.25rem 2rem', fontWeight: 'bold', color: `${(view === 'Free' ? 'white' : 'var(--p-color-bg-fill-emphasis-hover)')}`, cursor: 'pointer' }} onClick={() => setView('Free')}>Select Label</button>
+        </div> */}
+
+        <TitleBar title='Select Badges and Labels' />
+
+        <div>
+          <div style={{ padding: '1rem 2rem' }}>
+            <p style={{ fontWeight: 'bold', textDecoration: 'underline' }}>E-Commerce</p>
+          </div>
+          {
+            (imageUrls)
+              ?
+
+              <>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', padding: '10px', justifyContent: 'center' }}>
+                  {imageUrls.map((image, index) => (
+                    <div key={index} style={{ position: 'relative', justifyContent: 'center', display: 'flex' }}>
+                      <button
+                        onClick={() => { handleLabelChange(image.value); shopify.modal.hide('my-modal') }}
+                        style={{ background: 'none', aspectRatio: '1/1', border: 'none', padding: '0', cursor: 'pointer', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <img src={image.value} alt={image.label} style={{ maxWidth: '60px', maxHeight: '60px', margin: ' auto' }} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Paid Badges */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', padding: '10px', justifyContent: 'center' }}>
+                  {paidImageUrl.map((image, index) => (
+                    <div key={index} style={{ position: 'relative', justifyContent: 'center', display: 'flex' }}>
+                      {
+                        isOnPaidPlan
+                          ?
+                          <button
+                            onClick={() => { handleLabelChangeForPaidPlans(image.value); shopify.modal.hide('my-modal') }}
+                            style={{ background: 'none', border: 'none', padding: '0', cursor: 'pointer', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <img src={image.value} alt={image.label} style={{ maxWidth: '60px', maxHeight: '60px', margin: 'auto' }} />
+                          </button>
+                          :
+                          <div style={{ position: 'relative' }}>
+                            <button
+                              disabled
+                              style={{ opacity: '0.5', background: 'none', aspectRatio: '1/1', border: 'none', padding: '0', position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                              <img src={image.value} alt={image.label} style={{ maxWidth: '60px', maxHeight: '60px', margin: ' auto' }} />
+                            </button>
+                            <div style={{ position: 'absolute', top: '0', right: '0' }}><Icon source={LockFilledIcon} tone="base" /></div>
+                          </div>
+                      }
+                    </div>
+                  ))}
+                </div>
+              </>
+              :
+              <div style={{ display: 'flex', alignContent: 'center', justifyContent: "center", padding: '2rem' }}>
+                <Text variant='heading2xl'>
+                  Error: Try Reloading The Page
+                </Text>
+              </div>
+          }
         </div>
       </Modal>
     </Page >

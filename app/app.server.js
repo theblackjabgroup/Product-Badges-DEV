@@ -7,16 +7,13 @@ export async function createOrUpdateBadge(arrayToIterate) {
       const ProdObj = obj.productHandle;
       const ProdId = obj.id;
       const ProdImgUrl = obj.productImageUrl;
-  
       const arrayOfProdId = ProdId.split(",");
       const arrayOfProdImgUrl = ProdImgUrl.split(",");
       const arrayOfProd = ProdObj.split(",");
-  
       for (let i = 0; i < arrayOfProd.length; i++) { // Loop through each product handle
         const prodHandle = arrayOfProd[i];
         const prodId = arrayOfProdId[i];
         const prodImgUrl = arrayOfProdImgUrl[i];
-  
         const data = {
           id: prodId,
           productHandle: prodHandle,
@@ -26,12 +23,20 @@ export async function createOrUpdateBadge(arrayToIterate) {
           displayPosition: obj.displayPosition,
           displayPage: obj.displayPage,
           isEnabled: true,
-          isHoverEnabled: Boolean(obj.enableHover),
+          isHoverEnabled: Boolean(obj.enableHover == "true"),
           shop: obj.shop,
         };
             const badge = await db.Badge.findFirst({
               where: { id: prodId, shop: obj.shop },
             });
+                          
+            const displayPageArr = data.displayPage.split(",");
+            if(displayPageArr.length > 1 && displayPageArr[0] == "All")
+            {                
+              displayPageArr.shift();
+            }
+            data.displayPage = displayPageArr.join();
+            
             if (!badge) {
               const createdMapping = await db.badge.create({ data });
               console.log(
