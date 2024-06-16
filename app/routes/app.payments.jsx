@@ -162,7 +162,7 @@ const handlePlanUpgrade = useCallback(() => {
            
             <Modal.Section>
               <div style={{ textAlign: 'center' }}>
-                <img src='/images/4.png' width='135px' height='135px' alt='illustration' style={{ marginBottom: '20px' }} />
+                <img src='/images/Modalimg.png' width='135px' height='135px' alt='illustration' style={{ marginBottom: '20px' }} />
                 <div style={{ textAlign: 'justify', marginLeft:'37.828px', marginRight:'37.828px' }}>
                 <Text variant='bodyMd' fontWeight='semibold'>
                   By cancelling your plan, you will lose access to all premium features and benefits associated with your subscription. Your account will revert to the free plan, and any stored data or settings specific to premium features may be affected. Please ensure that you've downloaded or saved any important data before canceling.
@@ -214,7 +214,7 @@ const handlePlanUpgrade = useCallback(() => {
               </ButtonGroup>
               </div>
           </Layout.Section>
-          <div style={{position:'absolute', top: '135px', right: '240px'}}><img src='/images/5.png' width='160px' height='43px'   /> </div>
+          <div style={{position:'absolute', top: '135px', right: '240px'}}><img src='/images/discountTop.png' width='160px' height='43px'   /> </div>
           
           <Layout.Section>
             <InlineStack spacing="loose" alignment="center">
@@ -226,10 +226,10 @@ const handlePlanUpgrade = useCallback(() => {
 
                 
                 
-                  <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/2.png' alt='illustration' /> </div><Text fontWeight='bold'>Upto 25 Static Labels</Text></InlineStack>
-                  <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/2.png' alt='illustration' /> </div><Text fontWeight='bold'>Upto 25 Animated Labels</Text></InlineStack>
-                  <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/2.png' alt='illustration' /> </div><Text fontWeight='bold'>Flexible Label Placement</Text></InlineStack>
-                  <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/2.png' alt='illustration' /> </div><Text fontWeight='bold'>Unlimited Products</Text></InlineStack>
+                  <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/listIcon.png' alt='illustration' /> </div><Text fontWeight='bold'>Upto 25 Static Labels</Text></InlineStack>
+                  <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/listIcon.png' alt='illustration' /> </div><Text fontWeight='bold'>Upto 25 Animated Labels</Text></InlineStack>
+                  <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/listIcon.png' alt='illustration' /> </div><Text fontWeight='bold'>Flexible Label Placement</Text></InlineStack>
+                  <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/listIcon.png' alt='illustration' /> </div><Text fontWeight='bold'>Unlimited Products</Text></InlineStack>
                 
                 
                 <div style={{ textAlign: 'center', marginTop: '55px' }}>
@@ -260,17 +260,17 @@ const handlePlanUpgrade = useCallback(() => {
                 <Text variant='bodyLg' fontWeight='bold' tone='disabled'><div style={{ marginLeft:'15px',marginBottom:'30px'}}>"Unlock premium benefits for unparalleled performance."</div></Text>
                 
                
-                <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/2.png' alt='illustration' /> </div><Text fontWeight='bold'>Upto 50 Static Labels</Text></InlineStack>
-                <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/2.png' alt='illustration' /> </div><Text fontWeight='bold'>Upto 50 Animated Labels</Text></InlineStack>
-                <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/2.png' alt='illustration' /> </div><Text fontWeight='bold'>Flexible Label Placement</Text></InlineStack>
-                <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/2.png' alt='illustration' /> </div><Text fontWeight='bold'>Unlimited Products</Text></InlineStack>
+                <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/listIcon.png' alt='illustration' /> </div><Text fontWeight='bold'>Upto 50 Static Labels</Text></InlineStack>
+                <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/listIcon.png' alt='illustration' /> </div><Text fontWeight='bold'>Upto 50 Animated Labels</Text></InlineStack>
+                <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/listIcon.png' alt='illustration' /> </div><Text fontWeight='bold'>Flexible Label Placement</Text></InlineStack>
+                <InlineStack><div style={{marginLeft:'13px'}}><img src='/images/listIcon.png' alt='illustration' /> </div><Text fontWeight='bold'>Unlimited Products</Text></InlineStack>
     
                
                 <div style={{ textAlign: 'center', marginTop: '55px' }}>
                   <Button tone='success' disabled={(activeButtonIndex===0 && plan.name==='Monthly Subscription') || (activeButtonIndex===1 && plan.name==='Annual Subscription')} url={upgradeButtonUrl} variant='primary' size='large' onClick={() => { handlePlanUpgrade()}}>Select Plan</Button>
                 </div>
               </div>
-              <div style={{top:'-59px', right:'-33px', position:'absolute'}}><img src='/images/3.png' height='180px' width='180px' style={{ opacity: activeButtonIndex ? 1 : 0 }}  />
+              <div style={{top:'-59px', right:'-33px', position:'absolute'}}><img src='/images/discountOverlay.png' height='180px' width='180px' style={{ opacity: activeButtonIndex ? 1 : 0 }}  />
               </div>
               
               </div> 
@@ -282,7 +282,7 @@ const handlePlanUpgrade = useCallback(() => {
             <CalloutCard
               title={<span style={{ color: 'red' }}><Text variant='headingMd'> {isOnPaidPlan ? "Want to cancel your plan?" :"Want to upgrade your plan?" } </Text></span>}
 
-              illustration="/images/1.png"
+              illustration="/images/footerIcon.png"
               primaryAction={
                 isOnPaidPlan
                   ? {
@@ -314,4 +314,5 @@ const handlePlanUpgrade = useCallback(() => {
     </Page>
   );
 }
+
 
