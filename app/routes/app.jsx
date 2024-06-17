@@ -64,13 +64,13 @@ function handleBadgeClick() {
         <Link to="/app" rel="home">
           Home
         </Link>
-        <Link to="/app/payments">Payments - Yash</Link>
+        <Link to="/app/payments">Payments</Link>
 
-        <Link to="/app/labels">Labels - Sharad</Link>
-        <Link to="/app/create-label">Create Label - Sharad</Link>
+        <Link to="/app/labels">Labels</Link>
+        <Link to="/app/create-label">Create Label</Link>
 
-        <Link to="/app/badges" onClick={handleBadgeClick}>Badges - nikhil</Link>
-        <Link to="/app/api" onClick={handleAPIClick}>API - Nikhil</Link>
+        {/* <Link to="/app/badges" onClick={handleBadgeClick}>Badges - nikhil</Link>
+        <Link to="/app/api" onClick={handleAPIClick}>API - Nikhil</Link> */}
       </ui-nav-menu>
       <Outlet />
       </PlanProvider>
