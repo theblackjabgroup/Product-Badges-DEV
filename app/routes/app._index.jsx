@@ -3,7 +3,7 @@ import { Banner, Icon, BlockStack, Button, Card, InlineGrid, InlineStack, Page, 
 import step_one from '../assets/step_one.png'
 import step_two from '../assets/step_two.png'
 import step_three from '../assets/step_three.png'
-import support from '../assets/1.png'
+import support from '../assets/support.png'
 import mixpanel from 'mixpanel-browser';
 import { usePlan } from './app.plancontext';
 import { useEffect } from 'react';
@@ -12,9 +12,6 @@ import '../styles/label.css'
 import { useNavigate, useLoaderData } from '@remix-run/react';
 import { ANNUAL_PLAN, MONTHLY_PLAN, authenticate } from '../shopify.server';
 import { json } from '@remix-run/node';
-import {
-  AlertTriangleIcon
-} from '@shopify/polaris-icons';
 
 // edit your token here
 const TOKEN = 'YOUR_TOKEN'
@@ -47,7 +44,6 @@ export async function loader({ request }) {
     return json({ billing });
   }
 }
-
 
 
 export default function Index() {
@@ -99,14 +95,13 @@ export default function Index() {
   return (
     <>
       <Page>
-        <div style={{margin:'1rem 0rem'}}>
-          <Banner  title={<>If you have theme compatibility difficulties or other concerns, please do not hesitate to contact <span>theblackjabgroup@gmail.com.</span></>} tone='warning'/>
+        <div style={{ margin: '1rem 0rem' }}>
+          <Banner title={<>If you have theme compatibility difficulties or other concerns, please do not hesitate to contact <span>theblackjabgroup@gmail.com.</span></>} tone='warning' />
         </div>
         <BlockStack gap="400">
           <Text variant="headingXl" as="h4">
             Welcome to Our Product Badges and Labels
           </Text>
-
           <InlineGrid gap="400" columns={3}>
             <Card>
               <BlockStack align='space-between' gap={800} inlineAlign='center'>
@@ -160,10 +155,13 @@ export default function Index() {
             <InlineStack align='space-between' blockAlign='start'>
               <BlockStack gap={300} inlineAlign='start' align='space-between'>
                 <Text variant='headingLg'>
-                  Support
+                  Need Help ?
                 </Text>
+                <p style={{ color: 'green' }}>
+                  If you face any theme compatibility issues or have any other questions,
+                </p>
                 <p style={{ color: '#5C5F62' }} variant='bodyLg'>
-                  Connect with Black Jab Group
+                  Connect with us without hesitation, we're here for you!
                 </p>
                 <p style={{ color: '#5C5F62' }}>
                   theblackjabgroup@gmail.com
@@ -179,7 +177,6 @@ export default function Index() {
           </Card>
           {/* </Grid.Cell> */}
           {/* </Grid> */}
-
         </BlockStack>
       </Page>
     </>
