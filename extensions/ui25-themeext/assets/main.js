@@ -7,7 +7,8 @@ let freeTheme = false;
 async function decodeJson() {
   try {
     // Make an HTTP GET request to the server-side endpoint
-    const response = await fetch('https://lionfish-app-hrorj.ondigitalocean.app/app/mapping');
+    const response = await fetch('https://clownfish-app-2filb.ondigitalocean.app/app/mapping');
+    
 
     if (!response.ok) {
       throw new Error('Network response was not ok');
