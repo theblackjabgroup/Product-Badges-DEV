@@ -1,3 +1,4 @@
+/*
 .product-image-container:hover .img-tag.top-left {
     display: block !important;
   }
@@ -5,12 +6,12 @@
 .product-image-container .img-tag.top-left{
     display: none !important;
 }
-
-.tag-hover:hover .img-tag.top-left {
+*/
+.tag-hover:hover .img-tag{
     display: block !important;
   }
 
-  .tag-hover .img-tag.top-left{
+  .tag-hover .img-tag {
     display: none !important;
 }
 

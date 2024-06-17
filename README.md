@@ -1,3 +1,7 @@
+
+if you change main js, then run shopify app deploy
+
+
 Deploy to DO
 
 Deployment steps:
