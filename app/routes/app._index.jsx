@@ -1,5 +1,5 @@
 
-import { Banner, Icon, BlockStack, Button, Card, InlineGrid, InlineStack, Page, Text, Thumbnail } from '@shopify/polaris';
+import { Banner, BlockStack, Button, Card, InlineGrid, InlineStack, Page, Text, Thumbnail } from '@shopify/polaris';
 import step_one from '../assets/step_one.png'
 import step_two from '../assets/step_two.png'
 import step_three from '../assets/step_three.png'
@@ -14,7 +14,7 @@ import { ANNUAL_PLAN, MONTHLY_PLAN, authenticate } from '../shopify.server';
 import { json } from '@remix-run/node';
 
 // edit your token here
-const TOKEN = 'YOUR_TOKEN'
+const TOKEN = '70551b6bed93424cd2c7eacf49a345c2'
 
 // edit you user id here
 const UserID = 'SHARAD_JADHAV'
@@ -109,7 +109,7 @@ export default function Index() {
                 <Text variant='headingMd' alignment='justify'>Step 1 : Integrate our app into your Shopify theme.</Text>
                 <p style={{ textAlign: 'justify' }}>To enter the Theme Editor page, click the "Enabled app embed" button below, then activate our app and click "Save".</p>
                 <div style={{ margin: '1.15rem auto' }}>
-                  <Button variant='primary' target='_blank' url='https://admin.shopify.com/admin/themes/current/editor?context=apps&template=index'>Enable App Embed</Button>
+                  <Button variant='primary' target='_blank' url='https://admin.shopify.com/admin/themes/current/editor?context=apps&template=index' onClick={() => triggerMixPanel('Enable App', 'Enable App Button', 'Enable App Button Clicked')}>Enable App Embed</Button>
                 </div>
               </BlockStack>
             </Card>
@@ -120,7 +120,7 @@ export default function Index() {
                   <Text variant='headingMd' alignment='justify'>Step 2: Create your label.</Text>
                   <p style={{ textAlign: 'justify' }}>To begin the procedure, click the "Labels" tab, then "Create Labels," then personalize the label to meet your individual requirements.</p>
                   <div style={{ margin: '1.15rem auto' }}>
-                    <Button variant='primary' onClick={() => navigate('./create-label')}>Create Label</Button>
+                    <Button variant='primary' onClick={() => { navigate('./create-label'); triggerMixPanel('Create Label', 'Create Label Button', 'Create Label Button Clicked')}}>Create Label</Button>
                   </div>
                 </BlockStack>
               </InlineStack>
@@ -130,7 +130,7 @@ export default function Index() {
                 <img alt="" width="100%" height="100%" style={{ objectFit: 'cover', objectPosition: 'center', maxHeight: '300px' }} src={step_three} />
                 <Text variant='headingMd' alignment='justify'>Step 3: Publish your label.</Text>
                 <p style={{ textAlign: 'justify' }}>After you've finished designing the label, be sure to save and activate it so that it appears on your shop. If your label does not appear on your theme, please contact us to fix the problem.</p>
-                <Button variant='primary' onClick={() => navigate('./labels')}>Manage Label</Button>
+                <Button variant='primary' onClick={() => {navigate('./labels'); triggerMixPanel('Manage Label', 'Manage Label Button', 'Manage Label Button Clicked')}}>Manage Label</Button>
               </BlockStack>
             </Card>
           </InlineGrid>
@@ -145,7 +145,7 @@ export default function Index() {
                   <p>Easily install Shopify Badges and Labels. Check our installation guide for more details.</p>
                 </BlockStack>
                 {/* <Button size='micro' variant='primary'>Read Installation Guide</Button> */}
-                <a href="https://www.blackbytt.in/installation-guide-1" rel="noreferrer" target='_blank'><button style={{ cursor: 'pointer', display: 'inline-flex', boxSizing: 'border-box', boxShadow: 'var(--p-shadow-button-primary-inset)', background: 'var(--p-color-button-gradient-bg-fill), var(--p-color-bg-fill-brand)', padding: 'var(--p-space-150) var(--p-space-300)', border: 'none', borderRadius: 'var(--p-border-radius-200)', fontFamily: 'var(--p-font-family-sans)', color: 'var(--p-color-text-brand-on-bg-fill)' }} className=''>Read Installation Guide</button></a>
+                <a onClick={() => triggerMixPanel('Read Installation Guide', 'Guide Button', 'Guide Button Clicked')}  href="https://www.blackbytt.in/installation-guide-1" rel="noreferrer" target='_blank'><button style={{ cursor: 'pointer', display: 'inline-flex', boxSizing: 'border-box', boxShadow: 'var(--p-shadow-button-primary-inset)', background: 'var(--p-color-button-gradient-bg-fill), var(--p-color-bg-fill-brand)', padding: 'var(--p-space-150) var(--p-space-300)', border: 'none', borderRadius: 'var(--p-border-radius-200)', fontFamily: 'var(--p-font-family-sans)', color: 'var(--p-color-text-brand-on-bg-fill)' }} className=''>Read Installation Guide</button></a>
               </InlineStack>
             </InlineStack>
           </Card>
@@ -166,7 +166,7 @@ export default function Index() {
                 <p style={{ color: '#5C5F62' }}>
                   theblackjabgroup@gmail.com
                 </p>
-                <a target='_blank' variant={'primary'} href={`https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=theblackjabgroup@gmail.com&su=BADGE%20LABEL%20SUPPORT`} rel="noreferrer">
+                <a target='_blank' variant={'primary'} href={`https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=theblackjabgroup@gmail.com&su=Blackbytt%20Animated%20Character%20Badges%20-%20Support`} rel="noreferrer">
                   <Button onClick={() => triggerMixPanel('Contact', 'Contact', 'Contact Button Clicked')} variant='primary'>
                     Contact
                   </Button>

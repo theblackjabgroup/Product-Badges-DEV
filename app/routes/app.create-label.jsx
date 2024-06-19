@@ -3,7 +3,7 @@ import { json } from '@remix-run/node';
 import { Modal, TitleBar } from '@shopify/app-bridge-react';
 import { ButtonPressIcon, LockFilledIcon } from '@shopify/polaris-icons';
 import { createOrUpdateBadge } from "../app.server"
-import { useLoaderData, useSubmit } from '@remix-run/react';
+import { useLoaderData, useNavigate, useSubmit } from '@remix-run/react';
 import { ANNUAL_PLAN, MONTHLY_PLAN, authenticate } from '../shopify.server';
 import React, { useState, useCallback, useEffect } from 'react';
 import { Page, InlineStack, Text, Icon, Card, Button, Checkbox, BlockStack, Banner } from '@shopify/polaris';
@@ -243,11 +243,12 @@ export default function CreateLabelPage() {
         "enableHover": enableHover,
       };
       submit(data, { method: "post" })
-      setTopBannerStatus('success')
-      const timer = setTimeout(() => {
-        setTopBannerStatus('info');
-      }, 5000);
-      return () => clearTimeout(timer);
+      navigate('./labels')
+      // setTopBannerStatus('success')
+      // const timer = setTimeout(() => {
+      //   setTopBannerStatus('info');
+      // }, 5000);
+      // return () => clearTimeout(timer);
     } else {
       setTopBannerStatus('critical')
       const timer = setTimeout(() => {
@@ -289,6 +290,8 @@ export default function CreateLabelPage() {
   }
 
   const [topBannerStatus, setTopBannerStatus] = useState('info')
+
+const navigate = useNavigate()
 
   return (
     <Page title="Create Label">
