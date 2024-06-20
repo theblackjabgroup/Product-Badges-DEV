@@ -103,7 +103,7 @@ export default function PaymentsPage() {
   const upgradeButtonUrl = `/app/upgrade?plan_item=${plan_item}`;
   const cancelButtonUrl = `/app/cancel?plan_item=${plan_item}`;
 
-  const [activeButtonIndex, setActiveButtonIndex] = useState(0);
+  const [activeButtonIndex, setActiveButtonIndex] = useState(plan.name !== 'Monthly Subscription' ? 1 : 0);
  
 
   const handlePlanChange = (selected) => {
@@ -233,7 +233,7 @@ const handlePlanUpgrade = useCallback(() => {
                 
                 
                 <div style={{ textAlign: 'center', marginTop: '55px' }}>
-                  <Button tone='success' disabled={!isOnPaidPlan}  url={cancelButtonUrl} variant='primary' size='large' onClick={() => { handleCancelAndRedirect()}}>Select Plan</Button>
+                  <Button tone={ !isOnPaidPlan ? 'success' : undefined} disabled={!isOnPaidPlan}  url={cancelButtonUrl} variant={isOnPaidPlan ? 'secondary' : 'primary'} size='large' onClick={() => { handleCancelAndRedirect()}}>{ !isOnPaidPlan ? 'Select Plan' : 'Downgrade'}</Button>
                 </div>
               </div>
               <div style={{position:'relative',padding: '20px', border: isOnPaidPlan ? '1px solid #0269E3' : '1px', borderRadius: '22px', marginLeft: '60px', height: '450px', width: '320px',boxShadow:'2px 2px 2px 2px grey'}}>
@@ -267,7 +267,7 @@ const handlePlanUpgrade = useCallback(() => {
     
                
                 <div style={{ textAlign: 'center', marginTop: '55px' }}>
-                  <Button tone='success' disabled={(activeButtonIndex===0 && plan.name==='Monthly Subscription') || (activeButtonIndex===1 && plan.name==='Annual Subscription')} url={upgradeButtonUrl} variant='primary' size='large' onClick={() => { handlePlanUpgrade()}}>Select Plan</Button>
+                 <Button tone={(activeButtonIndex===0 && plan.name==='Annual Subscription') ? undefined : 'success'} disabled={(activeButtonIndex===0 && plan.name==='Monthly Subscription') || (activeButtonIndex===1 && plan.name==='Annual Subscription')} url={upgradeButtonUrl} variant={(activeButtonIndex===0 && plan.name==='Annual Subscription') ? 'secondary' : 'primary'} size='large' onClick={() => { handlePlanUpgrade()}}>{(activeButtonIndex===0 && plan.name==='Annual Subscription') ? 'Downgrade' : 'Select Plan' }</Button>
                 </div>
               </div>
               <div style={{top:'-59px', right:'-33px', position:'absolute'}}><img src='/images/discountOverlay.png' height='180px' width='180px' style={{ opacity: activeButtonIndex ? 1 : 0 }}  />
@@ -314,5 +314,9 @@ const handlePlanUpgrade = useCallback(() => {
     </Page>
   );
 }
+
+
+
+
 
 
