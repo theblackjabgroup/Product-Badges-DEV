@@ -56,8 +56,6 @@ export async function action({ request }) {
   }
 }
 
-let cdnUrl
-
 function LabelProductMapping() {
   const [imageUrls, setImageUrls] = useState([]);
 
@@ -389,7 +387,7 @@ export default function CreateLabelPage() {
             }
 
             <InlineStack gap={200} align='end'>
-              <Button size='micro' variant='primary' tone='success'>Apply</Button>
+              <Button size='micro' variant='primary' tone='success' onClick={() => shopify.modal.hide('changeLabelModal')}>Apply</Button>
             </InlineStack>
           </BlockStack>
         </Box>
@@ -408,7 +406,7 @@ export default function CreateLabelPage() {
           </InlineStack>
           <div className='label-page-selection' style={{ textAlign: 'left' }}>
             <BlockStack gap={400}>
-
+              <hr />
               <Text as="h3" variant="bodyMd" bold ><strong style={{ color: 'blue' }}>Show Label On</strong></Text>
 
               <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
@@ -445,7 +443,7 @@ export default function CreateLabelPage() {
               </div>
 
               <InlineStack gap={200} align='end'>
-                <Button size='micro' variant='primary' tone='success'>Apply</Button>
+                <Button size='micro' variant='primary' tone='success' onClick={() => shopify.modal.hide('changeConditions')}>Apply</Button>
               </InlineStack>
             </BlockStack>
           </div>

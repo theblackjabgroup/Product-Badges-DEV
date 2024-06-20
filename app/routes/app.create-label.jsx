@@ -3,7 +3,7 @@ import { json } from '@remix-run/node';
 import { Modal, TitleBar } from '@shopify/app-bridge-react';
 import { ButtonPressIcon, LockFilledIcon } from '@shopify/polaris-icons';
 import { createOrUpdateBadge } from "../app.server"
-import { useLoaderData, useNavigate, useSubmit } from '@remix-run/react';
+import { useLoaderData, useSubmit } from '@remix-run/react';
 import { ANNUAL_PLAN, MONTHLY_PLAN, authenticate } from '../shopify.server';
 import React, { useState, useCallback, useEffect } from 'react';
 import { Page, InlineStack, Text, Icon, Card, Button, Checkbox, BlockStack, Banner } from '@shopify/polaris';
@@ -243,16 +243,18 @@ export default function CreateLabelPage() {
         "enableHover": enableHover,
       };
       submit(data, { method: "post" })
-      navigate('./labels')
-      // setTopBannerStatus('success')
-      // const timer = setTimeout(() => {
-      //   setTopBannerStatus('info');
-      // }, 5000);
-      // return () => clearTimeout(timer);
+      setTopBannerStatus('success')
+      setTopBannerText("Saved Successfully")
+      const timer = setTimeout(() => {
+        setTopBannerStatus('info');
+        setTopBannerText("Select Product and Label Before Saving")
+      }, 5000);
+      return () => clearTimeout(timer);
     } else {
       setTopBannerStatus('critical')
       const timer = setTimeout(() => {
         setTopBannerStatus('info');
+        setTopBannerText("Select Product and Label Before Saving")
       }, 5000);
       return () => clearTimeout(timer);
     }
@@ -290,16 +292,16 @@ export default function CreateLabelPage() {
   }
 
   const [topBannerStatus, setTopBannerStatus] = useState('info')
+  const [topBannerText, setTopBannerText] = useState('Select Product and Label Before Saving.')
 
-const navigate = useNavigate()
 
   return (
     <Page title="Create Label">
       <div className='grid' style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '10px' }}>
         <div className='product-view-card'>
           <Banner
-            title="Select Label and Product Before Saving."
-            tone={topBannerStatus}>
+              title={topBannerText}
+              tone={topBannerStatus}>
             {selectImageState.productImage ? (
               <div style={{ position: 'relative', width: 'fit-content', height: 'fit-content', margin: '0 auto', padding: '0' }}>
                 <img src={selectImageState.productImage} alt={selectImageState.productTitle} style={{ background: "rgba(0,0,0,0.5)", height: '450px', objectFit: "contain", objectPosition: 'center', boxShadow: 'var(--p-shadow-200)', borderRadius: 'var(--p-border-radius-300)', border: 'var(--p-border-width-0165) solid var(--p-color-border)' }} />
