@@ -1,8 +1,9 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
+
 client_id = "db3941abd1f634665d3a402ddfddb6a3"
 name = "Animated Character Badges"
-handle = "Animated Character Badges"
+handle = "animated-character-badges"
 application_url = "https://oyster-app-fhr34.ondigitalocean.app/"
 embedded = true
 
