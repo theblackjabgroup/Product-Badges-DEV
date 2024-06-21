@@ -1,5 +1,5 @@
 {
-  "name": "ui25",
+  "name": "Animated Character Badges",
   "private": true,
   "scripts": {
     "build": "vite build && vite build --ssr",

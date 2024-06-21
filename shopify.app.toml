@@ -1,9 +1,10 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-client_id = "a96621e5d2c4b26c95805bd5c07c81c4"
-name = "ui25"
-handle = "ui25"
-application_url = "https://clownfish-app-2filb.ondigitalocean.app/"
+
+client_id = "db3941abd1f634665d3a402ddfddb6a3"
+name = "Animated Character Badges"
+handle = "animated-character-badges"
+application_url = "https://oyster-app-fhr34.ondigitalocean.app/"
 embedded = true
 
 [build]
@@ -17,9 +18,9 @@ scopes = "write_products"
 
 [auth]
 redirect_urls = [
-  "https://clownfish-app-2filb.ondigitalocean.app/auth/callback",
-  "https://clownfish-app-2filb.ondigitalocean.app/auth/shopify/callback",
-  "https://clownfish-app-2filb.ondigitalocean.app/api/auth/callback"
+  "https://oyster-app-fhr34.ondigitalocean.app/auth/callback",
+  "https://oyster-app-fhr34.ondigitalocean.app/auth/shopify/callback",
+  "https://oyster-app-fhr34.ondigitalocean.app/api/auth/callback"
 ]
 
 [webhooks]
