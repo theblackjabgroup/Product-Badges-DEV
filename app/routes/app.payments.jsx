@@ -49,7 +49,7 @@ export default function PaymentsPage() {
   const {plan} = useLoaderData(); // Load the plan data
  
   const [plan_item, setPlan] = useState('monthly');
-  const [paidPrice, setPaidPrice] = useState(10);
+  const [paidPrice, setPaidPrice] = useState(plan.name==='Annual Subscription' ? 90 : 10);
   const [modalActive, setModalActive] = useState(false);
   
   // Determine if the user is on a paid plan
@@ -103,7 +103,7 @@ export default function PaymentsPage() {
   const upgradeButtonUrl = `/app/upgrade?plan_item=${plan_item}`;
   const cancelButtonUrl = `/app/cancel?plan_item=${plan_item}`;
 
-  const [activeButtonIndex, setActiveButtonIndex] = useState(plan.name !== 'Monthly Subscription' ? 1 : 0);
+  const [activeButtonIndex, setActiveButtonIndex] = useState(plan.name !== 'Annual Subscription' ? 0 : 1);
  
 
   const handlePlanChange = (selected) => {
@@ -281,7 +281,6 @@ const handlePlanUpgrade = useCallback(() => {
             <div style={{marginTop:'30px', marginBottom:'20px'}}>
             <CalloutCard
               title={<span style={{ color: 'red' }}><Text variant='headingMd'> {isOnPaidPlan ? "Want to cancel your plan?" :"Want to upgrade your plan?" } </Text></span>}
-
               illustration="/images/footerIcon.png"
               primaryAction={
                 isOnPaidPlan
@@ -302,7 +301,7 @@ const handlePlanUpgrade = useCallback(() => {
                 </p>
               ) : (
                 <p>
-                  We understand that circumstances change, and we're here to help.
+                  Upgrade your plan now to unlock premium perks.
                 </p>
               )}
             </CalloutCard>
@@ -314,7 +313,6 @@ const handlePlanUpgrade = useCallback(() => {
     </Page>
   );
 }
-
 
 
 
