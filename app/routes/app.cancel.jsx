@@ -3,12 +3,14 @@ import { authenticate, MONTHLY_PLAN, ANNUAL_PLAN } from "../shopify.server";
 
 export const loader = async ({ request }) => {
   const { billing } = await authenticate.admin(request);
-  const plan_item = new URLSearchParams(request.url.split('?')[1]).get('plan_item');
+  let url = new URL(request.url);
+  let plan_item = url.searchParams.get('plan_item') || 'monthly';
 
+  let plan = plan_item === 'monthly' ? MONTHLY_PLAN : ANNUAL_PLAN;
   try {
     const billingCheck = await billing.require({
-      plans: [plan_item === 'monthly' ? MONTHLY_PLAN : ANNUAL_PLAN],
-      onFailure: async () => billing.request({ plan: plan_item === 'monthly' ? MONTHLY_PLAN : ANNUAL_PLAN }),
+      plans: [MONTHLY_PLAN, ANNUAL_PLAN],
+      onFailure: async () => billing.request({ plan: plan}),
     });
 
     const subscription = billingCheck.appSubscriptions[0];
