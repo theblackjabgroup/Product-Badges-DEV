@@ -97,7 +97,7 @@ export default function CreateLabelPage() {
   // Fetch Paid Badges
   const [paidImageUrl, setPaidImageUrl] = useState([])
   useEffect(() => {
-    const paidBadgesUrl = 'https://animated-character-badges-cdn-free.blr1.digitaloceanspaces.com'
+    const paidBadgesUrl = 'https://animated-character-badges-cdn-paid.blr1.digitaloceanspaces.com'
     async function fetchPaidBadges() {
       try {
         const response = await fetch(paidBadgesUrl);
