@@ -67,7 +67,7 @@ function handleBadgeClick() {
         
         <Link to="/app/create-label">Create Label</Link>
         <Link to="/app/labels">Labels</Link>
-        <Link to="/app/payments">Payments</Link>
+        <Link to="/app/payments">Pricing</Link>
         
 
         {/* <Link to="/app/badges" onClick={handleBadgeClick}>Badges - nikhil</Link>
