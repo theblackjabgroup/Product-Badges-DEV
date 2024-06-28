@@ -60,7 +60,7 @@ function LabelProductMapping() {
   const [imageUrls, setImageUrls] = useState([]);
 
   useEffect(() => {
-    const cdnUrl = 'https://blackbyttcdn.blr1.digitaloceanspaces.com'
+    const cdnUrl = 'https://animated-character-badges-cdn-free.blr1.digitaloceanspaces.com'
     async function fetchData() {
       try {
         const response = await fetch(cdnUrl);
@@ -105,7 +105,7 @@ export default function CreateLabelPage() {
   // Fetch Paid Badges
   const [paidImageUrl, setPaidImageUrl] = useState([])
   useEffect(() => {
-    const paidBadgesUrl = 'https://blackbyttpaidbadges.blr1.digitaloceanspaces.com'
+    const paidBadgesUrl = 'https://animated-character-badges-cdn-paid.blr1.digitaloceanspaces.com'
     async function fetchPaidBadges() {
       try {
         const response = await fetch(paidBadgesUrl);
