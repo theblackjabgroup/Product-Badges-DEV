@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "a96621e5d2c4b26c95805bd5c07c81c4"
-name = "ui25"
-handle = "ui25"
+name = "Animated Character Badges Dev"
+handle = "animated-character-badges-dev"
 application_url = "https://clownfish-app-2filb.ondigitalocean.app/"
 embedded = true
 
