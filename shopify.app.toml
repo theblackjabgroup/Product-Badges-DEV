@@ -25,5 +25,10 @@ redirect_urls = [
 [webhooks]
 api_version = "2024-04"
 
+ [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "https://clownfish-app-2filb.ondigitalocean.app/webhooks"
+  compliance_topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
+
 [pos]
 embedded = false

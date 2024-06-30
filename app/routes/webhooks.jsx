@@ -17,8 +17,20 @@ export const action = async ({ request }) => {
 
       break;
     case "CUSTOMERS_DATA_REQUEST":
+      console.log("customer data requested");
+      return new Response(null, { status: 200 });
+      
+
     case "CUSTOMERS_REDACT":
+      console.log("customer erasure requested")
+      return new Response(null, { status: 200 });
+
     case "SHOP_REDACT":
+      console.log("shop erasure requested")
+      if (session) {
+        await db.session.deleteMany({ where: { shop } });
+      }
+      return new Response(null, { status: 200 });
     default:
       throw new Response("Unhandled webhook topic", { status: 404 });
   }
